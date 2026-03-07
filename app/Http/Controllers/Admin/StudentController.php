@@ -4,62 +4,88 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Student;
 
 class StudentController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Affiche la liste de tous les élèves
      */
     public function index()
     {
-        //
+        $students = Student::latest()->paginate(10);
+        return view('admin.students.index', compact('students'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Affiche le formulaire d'ajout d'un élève
      */
     public function create()
     {
-        //
+        return view('admin.students.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Enregistre un nouvel élève en base de données
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'first_name'          => 'required|string|max:255',
+            'last_name'           => 'required|string|max:255',
+            'date_of_birth'       => 'required|date',
+            'gender'              => 'required|in:M,F',
+            'registration_number' => 'required|unique:students',
+        ]);
+
+        Student::create($request->all());
+
+        return redirect()->route('admin.students.index')
+                         ->with('success', 'Élève ajouté avec succès !');
     }
 
     /**
-     * Display the specified resource.
+     * Affiche le profil d'un élève
      */
-    public function show(string $id)
+    public function show(Student $student)
     {
-        //
+        return view('admin.students.show', compact('student'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Affiche le formulaire de modification d'un élève
      */
-    public function edit(string $id)
+    public function edit(Student $student)
     {
-        //
+        return view('admin.students.edit', compact('student'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Met à jour les informations d'un élève
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Student $student)
     {
-        //
+        $request->validate([
+            'first_name'    => 'required|string|max:255',
+            'last_name'     => 'required|string|max:255',
+            'date_of_birth' => 'required|date',
+            'gender'        => 'required|in:M,F',
+        ]);
+
+        $student->update($request->all());
+
+        return redirect()->route('admin.students.index')
+                         ->with('success', 'Élève modifié avec succès !');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Supprime un élève de la base de données
      */
-    public function destroy(string $id)
+    public function destroy(Student $student)
     {
-        //
+        $student->delete();
+
+        return redirect()->route('admin.students.index')
+                         ->with('success', 'Élève supprimé avec succès !');
     }
 }

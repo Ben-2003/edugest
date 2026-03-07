@@ -4,62 +4,92 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Teacher;
+use App\Models\User;
 
 class TeacherController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Affiche la liste de tous les enseignants
      */
     public function index()
     {
-        //
+        $teachers = Teacher::with('user')->latest()->paginate(10);
+        return view('admin.teachers.index', compact('teachers'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Affiche le formulaire d'ajout d'un enseignant
      */
     public function create()
     {
-        //
+        return view('admin.teachers.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Enregistre un nouvel enseignant
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'first_name'     => 'required|string|max:255',
+            'last_name'      => 'required|string|max:255',
+            'email'          => 'required|email|unique:teachers',
+            'phone'          => 'nullable|string|max:20',
+            'specialization' => 'nullable|string|max:255',
+            'hire_date'      => 'required|date',
+        ]);
+
+        Teacher::create($request->all());
+
+        return redirect()->route('admin.teachers.index')
+                         ->with('success', 'Enseignant ajouté avec succès !');
     }
 
     /**
-     * Display the specified resource.
+     * Affiche le profil d'un enseignant
      */
-    public function show(string $id)
+    public function show(Teacher $teacher)
     {
-        //
+        return view('admin.teachers.show', compact('teacher'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Affiche le formulaire de modification
      */
-    public function edit(string $id)
+    public function edit(Teacher $teacher)
     {
-        //
+        return view('admin.teachers.edit', compact('teacher'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Met à jour les informations d'un enseignant
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Teacher $teacher)
     {
-        //
+        $request->validate([
+            'first_name'     => 'required|string|max:255',
+            'last_name'      => 'required|string|max:255',
+            'email'          => 'required|email|unique:teachers,email,' . $teacher->id,
+            'phone'          => 'nullable|string|max:20',
+            'specialization' => 'nullable|string|max:255',
+            'hire_date'      => 'required|date',
+        ]);
+
+        $teacher->update($request->all());
+
+        return redirect()->route('admin.teachers.index')
+                         ->with('success', 'Enseignant modifié avec succès !');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Supprime un enseignant
      */
-    public function destroy(string $id)
+    public function destroy(Teacher $teacher)
     {
-        //
+        $teacher->delete();
+
+        return redirect()->route('admin.teachers.index')
+                         ->with('success', 'Enseignant supprimé avec succès !');
     }
 }

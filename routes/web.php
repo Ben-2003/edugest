@@ -21,7 +21,7 @@ use App\Http\Controllers\Teacher\TeacherDashboardController;
 
 /*
 |--------------------------------------------------------------------------
-| Routes publiques (accessibles sans connexion)
+| Page d'accueil → redirige vers login
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () {
@@ -30,81 +30,48 @@ Route::get('/', function () {
 
 /*
 |--------------------------------------------------------------------------
-| Routes authentifiées (nécessitent une connexion)
+| Routes ADMIN — seulement accessible par l'admin
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function () {
 
-    /*
-    |----------------------------------------------------------------------
-    | Routes ADMIN
-    | Middleware 'auth' vérifie que l'utilisateur est connecté
-    |----------------------------------------------------------------------
-    */
-    Route::prefix('admin')->name('admin.')->group(function () {
+    // Tableau de bord
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        // Tableau de bord admin
-        Route::get('/dashboard', [DashboardController::class, 'index'])
-            ->name('dashboard');
-
-        // Gestion des élèves (CRUD complet)
-        Route::resource('students', StudentController::class);
-
-        // Gestion des enseignants (CRUD complet)
-        Route::resource('teachers', TeacherController::class);
-
-        // Gestion des classes (CRUD complet)
-        Route::resource('classes', ClassController::class);
-
-        // Gestion des matières (CRUD complet)
-        Route::resource('subjects', SubjectController::class);
-
-        // Gestion des inscriptions (CRUD complet)
-        Route::resource('enrollments', EnrollmentController::class);
-
-        // Gestion des notes (CRUD complet)
-        Route::resource('grades', GradeController::class);
-
-        // Gestion des bulletins (CRUD complet)
-        Route::resource('report-cards', ReportCardController::class);
-
-        // Gestion des absences (CRUD complet)
-        Route::resource('attendances', AttendanceController::class);
-
-        // Gestion des paiements (CRUD complet)
-        Route::resource('payments', PaymentController::class);
-
-        // Gestion des emplois du temps (CRUD complet)
-        Route::resource('schedules', ScheduleController::class);
-    });
-
-    /*
-    |----------------------------------------------------------------------
-    | Routes ENSEIGNANT
-    |----------------------------------------------------------------------
-    */
-    Route::prefix('teacher')->name('teacher.')->group(function () {
-
-        // Tableau de bord enseignant
-        Route::get('/dashboard', [TeacherDashboardController::class, 'index'])
-            ->name('dashboard');
-    });
-
-    /*
-    |----------------------------------------------------------------------
-    | Routes PARENT
-    |----------------------------------------------------------------------
-    */
-    Route::prefix('parent')->name('parent.')->group(function () {
-
-        // Tableau de bord parent
-        Route::get('/dashboard', [ParentDashboardController::class, 'index'])
-            ->name('dashboard');
-    });
+    // CRUD complet pour chaque module
+    Route::resource('students', StudentController::class);
+    Route::resource('teachers', TeacherController::class);
+    Route::resource('classes', ClassController::class);
+    Route::resource('subjects', SubjectController::class);
+    Route::resource('enrollments', EnrollmentController::class);
+    Route::resource('grades', GradeController::class);
+    Route::resource('report-cards', ReportCardController::class);
+    Route::resource('attendances', AttendanceController::class);
+    Route::resource('payments', PaymentController::class);
+    Route::resource('schedules', ScheduleController::class);
 });
 
-// Routes d'authentification générées par Laravel UI
-Auth::routes();
-Auth::routes();
+/*
+|--------------------------------------------------------------------------
+| Routes ENSEIGNANT — seulement accessible par l'enseignant
+|--------------------------------------------------------------------------
+*/
+Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'role:enseignant'])->group(function () {
+    Route::get('/dashboard', [TeacherDashboardController::class, 'index'])->name('dashboard');
+});
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+/*
+|--------------------------------------------------------------------------
+| Routes PARENT — seulement accessible par le parent
+|--------------------------------------------------------------------------
+*/
+Route::prefix('parent')->name('parent.')->middleware(['auth', 'role:parent'])->group(function () {
+    Route::get('/dashboard', [ParentDashboardController::class, 'index'])->name('dashboard');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Routes d'authentification Laravel UI
+|--------------------------------------------------------------------------
+*/
+Auth::routes();
