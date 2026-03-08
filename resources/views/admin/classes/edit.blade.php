@@ -1,11 +1,13 @@
 @extends('layouts.admin')
 
-@section('title', 'Modifier Élève')
-@section('page-title', 'Modifier l\'Élève')
+{{-- Titre de la page --}}
+@section('title', 'Modifier Classe')
+@section('page-title', 'Modifier la Classe')
 
+{{-- Fil d'ariane --}}
 @section('breadcrumb')
     <a href="{{ route('admin.dashboard') }}">Accueil</a> ›
-    <a href="{{ route('admin.students.index') }}">Élèves</a> ›
+    <a href="{{ route('admin.classes.index') }}">Classes</a> ›
     <span style="color:var(--text);">Modifier</span>
 @endsection
 
@@ -39,49 +41,66 @@
     <div class="form-header">
         <div class="form-icon"><i class="fas fa-pen"></i></div>
         <div>
-            <div class="form-title">Modifier : {{ $student->first_name }} {{ $student->last_name }}</div>
-            <div class="form-subtitle">Modifiez les informations de l'élève</div>
+            <div class="form-title">Modifier : {{ $class->class_name }}</div>
+            <div class="form-subtitle">Modifiez les informations de la classe</div>
         </div>
     </div>
     <div class="form-body">
-        <form action="{{ route('admin.students.update', $student) }}" method="POST">
+        <form action="{{ route('admin.classes.update', $class) }}" method="POST">
             @csrf @method('PUT')
             <div class="form-row">
                 <div class="form-group">
-                    <label>Prénom <span>*</span></label>
-                    <input type="text" name="first_name" value="{{ old('first_name', $student->first_name) }}">
-                    @error('first_name') <span class="error-msg">{{ $message }}</span> @enderror
+                    <label>Nom de la classe <span>*</span></label>
+                    <input type="text" name="class_name" value="{{ old('class_name', $class->class_name) }}">
+                    @error('class_name') <span class="error-msg">{{ $message }}</span> @enderror
                 </div>
                 <div class="form-group">
-                    <label>Nom <span>*</span></label>
-                    <input type="text" name="last_name" value="{{ old('last_name', $student->last_name) }}">
-                    @error('last_name') <span class="error-msg">{{ $message }}</span> @enderror
+                    <label>Niveau <span>*</span></label>
+                    <select name="level">
+                        <option value="">-- Choisir --</option>
+                        <optgroup label="Maternelle">
+                            @foreach(['Petite Section','Moyenne Section','Grande Section'] as $lvl)
+                                <option value="{{ $lvl }}" {{ old('level', $class->level) == $lvl ? 'selected' : '' }}>{{ $lvl }}</option>
+                            @endforeach
+                        </optgroup>
+                        <optgroup label="Primaire">
+                            @foreach(['CP','CE1','CE2','CM1','CM2'] as $lvl)
+                                <option value="{{ $lvl }}" {{ old('level', $class->level) == $lvl ? 'selected' : '' }}>{{ $lvl }}</option>
+                            @endforeach
+                        </optgroup>
+                    </select>
+                    @error('level') <span class="error-msg">{{ $message }}</span> @enderror
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label>Date de naissance <span>*</span></label>
-                    <input type="date" name="date_of_birth" value="{{ old('date_of_birth', \Carbon\Carbon::parse($student->date_of_birth)->format('Y-m-d')) }}">
-                    @error('date_of_birth') <span class="error-msg">{{ $message }}</span> @enderror
+                    <label>Année scolaire <span>*</span></label>
+                    <input type="text" name="year_label"
+                           value="{{ old('year_label', $class->schoolYear ? $class->schoolYear->year_label : '') }}"
+                           placeholder="Ex: 2025-2026">
+                    @error('year_label') <span class="error-msg">{{ $message }}</span> @enderror
                 </div>
                 <div class="form-group">
-                    <label>Genre <span>*</span></label>
-                    <select name="gender">
-                        <option value="">-- Choisir --</option>
-                        <option value="M" {{ old('gender', $student->gender) == 'M' ? 'selected' : '' }}>Masculin</option>
-                        <option value="F" {{ old('gender', $student->gender) == 'F' ? 'selected' : '' }}>Féminin</option>
-                    </select>
-                    @error('gender') <span class="error-msg">{{ $message }}</span> @enderror
+                    <label>Capacité maximale <span>*</span></label>
+                    <input type="number" name="capacity" value="{{ old('capacity', $class->capacity) }}" min="1" max="100">
+                    @error('capacity') <span class="error-msg">{{ $message }}</span> @enderror
                 </div>
             </div>
             <div class="form-group">
-                <label>Numéro d'inscription <span>*</span></label>
-                <input type="text" name="registration_number" value="{{ old('registration_number', $student->registration_number) }}">
-                @error('registration_number') <span class="error-msg">{{ $message }}</span> @enderror
+                <label>Enseignant titulaire</label>
+                <select name="teacher_id">
+                    <option value="">-- Aucun titulaire --</option>
+                    @foreach($teachers as $teacher)
+                        <option value="{{ $teacher->id }}" {{ old('teacher_id', $class->teacher_id) == $teacher->id ? 'selected' : '' }}>
+                            {{ $teacher->first_name }} {{ $teacher->last_name }}
+                            {{ $teacher->specialization ? '— ' . $teacher->specialization : '' }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
             <div class="form-actions">
                 <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Enregistrer les modifications</button>
-                <a href="{{ route('admin.students.show', $student) }}" class="btn-cancel"><i class="fas fa-times"></i> Annuler</a>
+                <a href="{{ route('admin.classes.show', $class) }}" class="btn-cancel"><i class="fas fa-times"></i> Annuler</a>
             </div>
         </form>
     </div>

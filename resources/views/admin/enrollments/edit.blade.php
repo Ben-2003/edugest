@@ -1,11 +1,13 @@
 @extends('layouts.admin')
 
-@section('title', 'Modifier Élève')
-@section('page-title', 'Modifier l\'Élève')
+{{-- Titre de la page --}}
+@section('title', 'Modifier Inscription')
+@section('page-title', 'Modifier l\'Inscription')
 
+{{-- Fil d'ariane --}}
 @section('breadcrumb')
     <a href="{{ route('admin.dashboard') }}">Accueil</a> ›
-    <a href="{{ route('admin.students.index') }}">Élèves</a> ›
+    <a href="{{ route('admin.enrollments.index') }}">Inscriptions</a> ›
     <span style="color:var(--text);">Modifier</span>
 @endsection
 
@@ -17,13 +19,11 @@
     .form-title { font-size:16px; font-weight:600; }
     .form-subtitle { font-size:12px; color:var(--muted); margin-top:2px; }
     .form-body { padding:28px; }
-    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px; }
     .form-group { display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
     label { font-size:13px; font-weight:600; }
     label span { color:var(--accent3); }
     input, select { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:11px 16px; color:var(--text); font-size:14px; font-family:'DM Sans',sans-serif; transition:all 0.2s; outline:none; width:100%; }
     input:focus, select:focus { border-color:#f59e0b; box-shadow:0 0 0 3px rgba(245,158,11,0.1); }
-    input::placeholder { color:var(--muted); }
     select option { background:var(--surface2); }
     .error-msg { font-size:12px; color:var(--accent3); margin-top:4px; }
     .form-actions { display:flex; gap:12px; margin-top:28px; padding-top:24px; border-top:1px solid var(--border); }
@@ -39,49 +39,51 @@
     <div class="form-header">
         <div class="form-icon"><i class="fas fa-pen"></i></div>
         <div>
-            <div class="form-title">Modifier : {{ $student->first_name }} {{ $student->last_name }}</div>
-            <div class="form-subtitle">Modifiez les informations de l'élève</div>
+            <div class="form-title">
+                Modifier : {{ $enrollment->student->first_name }} {{ $enrollment->student->last_name }}
+            </div>
+            <div class="form-subtitle">Modifier la classe ou la date d'inscription</div>
         </div>
     </div>
     <div class="form-body">
-        <form action="{{ route('admin.students.update', $student) }}" method="POST">
+        <form action="{{ route('admin.enrollments.update', $enrollment) }}" method="POST">
             @csrf @method('PUT')
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Prénom <span>*</span></label>
-                    <input type="text" name="first_name" value="{{ old('first_name', $student->first_name) }}">
-                    @error('first_name') <span class="error-msg">{{ $message }}</span> @enderror
-                </div>
-                <div class="form-group">
-                    <label>Nom <span>*</span></label>
-                    <input type="text" name="last_name" value="{{ old('last_name', $student->last_name) }}">
-                    @error('last_name') <span class="error-msg">{{ $message }}</span> @enderror
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Date de naissance <span>*</span></label>
-                    <input type="date" name="date_of_birth" value="{{ old('date_of_birth', \Carbon\Carbon::parse($student->date_of_birth)->format('Y-m-d')) }}">
-                    @error('date_of_birth') <span class="error-msg">{{ $message }}</span> @enderror
-                </div>
-                <div class="form-group">
-                    <label>Genre <span>*</span></label>
-                    <select name="gender">
-                        <option value="">-- Choisir --</option>
-                        <option value="M" {{ old('gender', $student->gender) == 'M' ? 'selected' : '' }}>Masculin</option>
-                        <option value="F" {{ old('gender', $student->gender) == 'F' ? 'selected' : '' }}>Féminin</option>
-                    </select>
-                    @error('gender') <span class="error-msg">{{ $message }}</span> @enderror
-                </div>
+            <div class="form-group">
+                <label>Élève <span>*</span></label>
+                <select name="student_id">
+                    <option value="">-- Choisir un élève --</option>
+                    @foreach($students as $student)
+                        <option value="{{ $student->id }}"
+                            {{ old('student_id', $enrollment->student_id) == $student->id ? 'selected' : '' }}>
+                            {{ $student->last_name }} {{ $student->first_name }} — {{ $student->registration_number }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('student_id') <span class="error-msg">{{ $message }}</span> @enderror
             </div>
             <div class="form-group">
-                <label>Numéro d'inscription <span>*</span></label>
-                <input type="text" name="registration_number" value="{{ old('registration_number', $student->registration_number) }}">
-                @error('registration_number') <span class="error-msg">{{ $message }}</span> @enderror
+                <label>Classe <span>*</span></label>
+                <select name="class_id">
+                    <option value="">-- Choisir une classe --</option>
+                    @foreach($classes as $class)
+                        <option value="{{ $class->id }}"
+                            {{ old('class_id', $enrollment->class_id) == $class->id ? 'selected' : '' }}>
+                            {{ $class->class_name }} — {{ $class->level }}
+                            {{ $class->schoolYear ? '(' . $class->schoolYear->year_label . ')' : '' }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('class_id') <span class="error-msg">{{ $message }}</span> @enderror
+            </div>
+            <div class="form-group">
+                <label>Date d'inscription <span>*</span></label>
+                <input type="date" name="enrollment_date"
+                       value="{{ old('enrollment_date', \Carbon\Carbon::parse($enrollment->enrollment_date)->format('Y-m-d')) }}">
+                @error('enrollment_date') <span class="error-msg">{{ $message }}</span> @enderror
             </div>
             <div class="form-actions">
                 <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Enregistrer les modifications</button>
-                <a href="{{ route('admin.students.show', $student) }}" class="btn-cancel"><i class="fas fa-times"></i> Annuler</a>
+                <a href="{{ route('admin.enrollments.index') }}" class="btn-cancel"><i class="fas fa-times"></i> Annuler</a>
             </div>
         </form>
     </div>

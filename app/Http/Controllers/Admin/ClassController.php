@@ -4,62 +4,129 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Classes;
+use App\Models\SchoolYear;
+use App\Models\Teacher;
 
 class ClassController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Affiche la liste de toutes les classes
      */
     public function index()
     {
-        //
+        $classes = Classes::with(['schoolYear', 'teacher'])->latest()->paginate(10);
+        return view('admin.classes.index', compact('classes'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Affiche le formulaire d'ajout
      */
     public function create()
     {
-        //
+        $schoolYears = SchoolYear::all();
+        $teachers    = Teacher::all();
+        return view('admin.classes.create', compact('schoolYears', 'teachers'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Enregistre une nouvelle classe
      */
-    public function store(Request $request)
+public function store(Request $request)
+{
+    // Validation des champs incluant capacity
+    $request->validate([
+        'class_name' => 'required|string|max:255',
+        'level'      => 'required|string',
+        'year_label' => 'required|string',
+        'capacity'   => 'required|integer|min:1|max:100',
+        'teacher_id' => 'nullable|exists:teachers,id',
+    ]);
+
+    // Création ou récupération de l'année scolaire automatiquement
+    $schoolYear = SchoolYear::firstOrCreate(
+        ['year_label' => $request->year_label],
+        [
+            'start_date' => substr($request->year_label, 0, 4) . '-09-01',
+            'end_date'   => substr($request->year_label, 5, 4) . '-06-30',
+            'is_current' => true
+        ]
+    );
+
+    // Création de la classe avec tous les champs
+    Classes::create([
+        'class_name'     => $request->class_name,
+        'level'          => $request->level,
+        'school_year_id' => $schoolYear->id,
+        'teacher_id'     => $request->teacher_id,
+        'capacity'       => $request->capacity,
+    ]);
+
+    return redirect()->route('admin.classes.index')
+                     ->with('success', 'Classe créée avec succès !');
+}
+
+    /**
+     * Affiche le détail d'une classe
+     */
+    public function show(Classes $class)
     {
-        //
+        $class->load(['schoolYear', 'teacher', 'enrollments.student']);
+        return view('admin.classes.show', compact('class'));
     }
 
     /**
-     * Display the specified resource.
+     * Affiche le formulaire de modification
      */
-    public function show(string $id)
+    public function edit(Classes $class)
     {
-        //
+        $schoolYears = SchoolYear::all();
+        $teachers    = Teacher::all();
+        return view('admin.classes.edit', compact('class', 'schoolYears', 'teachers'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Met à jour une classe
      */
-    public function edit(string $id)
-    {
-        //
-    }
+  public function update(Request $request, Classes $class)
+{
+    $request->validate([
+        'class_name' => 'required|string|max:255',
+        'level'      => 'required|string|max:100',
+        'year_label' => 'required|string|max:20',
+        'teacher_id' => 'nullable|exists:teachers,id',
+        'capacity'   => 'required|integer|min:1|max:100',
+    ]);
+
+    $schoolYear = SchoolYear::firstOrCreate(
+        ['year_label' => $request->year_label],
+        [
+            'start_date' => substr($request->year_label, 0, 4) . '-09-01',
+            'end_date'   => substr($request->year_label, 5, 4) . '-06-30',
+            'is_current' => false,
+        ]
+    );
+
+    $class->update([
+        'class_name'     => $request->class_name,
+        'level'          => $request->level,
+        'school_year_id' => $schoolYear->id,
+        'teacher_id'     => $request->teacher_id,
+        'capacity'       => $request->capacity,
+    ]);
+
+    return redirect()->route('admin.classes.index')
+                     ->with('success', 'Classe modifiée avec succès !');
+}
 
     /**
-     * Update the specified resource in storage.
+     * Supprime une classe
      */
-    public function update(Request $request, string $id)
+    public function destroy(Classes $class)
     {
-        //
-    }
+        $class->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->route('admin.classes.index')
+                         ->with('success', 'Classe supprimée avec succès !');
     }
 }
