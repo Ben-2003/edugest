@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Schedule extends Model
 {
-    // Champs autorisés à être remplis en masse
+    use HasFactory;
+
     protected $fillable = [
         'class_id',
         'subject_id',
@@ -17,17 +19,16 @@ class Schedule extends Model
     ];
 
     /**
-     * Un créneau appartient à une classe
-     * Relation : Schedule -> Classes (Many To One)
+     * Relation avec la classe
+     * Renommé schoolClass car 'class' est un mot réservé PHP
      */
-    public function classe()
+    public function schoolClass()
     {
         return $this->belongsTo(Classes::class, 'class_id');
     }
 
     /**
-     * Un créneau appartient à une matière
-     * Relation : Schedule -> Subject (Many To One)
+     * Relation avec la matière
      */
     public function subject()
     {
@@ -35,8 +36,7 @@ class Schedule extends Model
     }
 
     /**
-     * Un créneau appartient à un enseignant
-     * Relation : Schedule -> Teacher (Many To One)
+     * Relation avec l'enseignant
      */
     public function teacher()
     {

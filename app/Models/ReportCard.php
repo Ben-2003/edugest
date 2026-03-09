@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ReportCard extends Model
 {
-    // Champs autorisés à être remplis en masse
+    use HasFactory;
+
     protected $fillable = [
         'student_id',
         'class_id',
@@ -17,8 +19,7 @@ class ReportCard extends Model
     ];
 
     /**
-     * Un bulletin appartient à un élève
-     * Relation : ReportCard -> Student (Many To One)
+     * Relation avec l'élève
      */
     public function student()
     {
@@ -26,17 +27,16 @@ class ReportCard extends Model
     }
 
     /**
-     * Un bulletin appartient à une classe
-     * Relation : ReportCard -> Classes (Many To One)
+     * Relation avec la classe
+     * Renommé schoolClass car 'class' est un mot réservé PHP
      */
-    public function classe()
+    public function schoolClass()
     {
         return $this->belongsTo(Classes::class, 'class_id');
     }
 
     /**
-     * Un bulletin appartient à une année scolaire
-     * Relation : ReportCard -> SchoolYear (Many To One)
+     * Relation avec l'année scolaire
      */
     public function schoolYear()
     {

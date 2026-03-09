@@ -49,15 +49,31 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::resource('attendances', AttendanceController::class);
     Route::resource('payments', PaymentController::class);
     Route::resource('schedules', ScheduleController::class);
-});
+    Route::resource('report_cards', ReportCardController::class);});
 
 /*
 |--------------------------------------------------------------------------
 | Routes ENSEIGNANT — seulement accessible par l'enseignant
 |--------------------------------------------------------------------------
 */
+/* ══ ESPACE ENSEIGNANT ══ */
 Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'role:enseignant'])->group(function () {
-    Route::get('/dashboard', [TeacherDashboardController::class, 'index'])->name('dashboard');
+
+    /* Dashboard */
+    Route::get('dashboard', [\App\Http\Controllers\Teacher\TeacherDashboardController::class, 'index'])
+         ->name('dashboard');
+
+    /* Notes — saisie limitée à ses classes */
+    Route::resource('grades', \App\Http\Controllers\Teacher\TeacherGradeController::class)
+         ->only(['index', 'create', 'store', 'destroy']);
+
+    /* Absences — appel limité à ses classes */
+    Route::resource('attendances', \App\Http\Controllers\Teacher\TeacherAttendanceController::class)
+         ->only(['index', 'create', 'store', 'destroy']);
+
+    /* Emploi du temps — lecture seule */
+    Route::get('schedules', [\App\Http\Controllers\Teacher\TeacherDashboardController::class, 'schedules'])
+         ->name('schedules');
 });
 
 /*

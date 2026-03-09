@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Grade extends Model
 {
-    // Champs autorisés à être remplis en masse
+    use HasFactory;
+
+    /**
+     * Colonnes autorisées à l'assignation de masse
+     */
     protected $fillable = [
         'student_id',
         'subject_id',
@@ -17,8 +22,7 @@ class Grade extends Model
     ];
 
     /**
-     * Une note appartient à un élève
-     * Relation : Grade -> Student (Many To One)
+     * Relation avec l'élève
      */
     public function student()
     {
@@ -26,8 +30,7 @@ class Grade extends Model
     }
 
     /**
-     * Une note appartient à une matière
-     * Relation : Grade -> Subject (Many To One)
+     * Relation avec la matière
      */
     public function subject()
     {
@@ -35,17 +38,16 @@ class Grade extends Model
     }
 
     /**
-     * Une note appartient à une classe
-     * Relation : Grade -> Classes (Many To One)
+     * Relation avec la classe
+     * Renommé schoolClass car 'class' est un mot réservé PHP
      */
-    public function classe()
+    public function schoolClass()
     {
         return $this->belongsTo(Classes::class, 'class_id');
     }
 
     /**
-     * Une note appartient à une année scolaire
-     * Relation : Grade -> SchoolYear (Many To One)
+     * Relation avec l'année scolaire
      */
     public function schoolYear()
     {

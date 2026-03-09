@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Attendance extends Model
 {
-    // Champs autorisés à être remplis en masse
+    use HasFactory;
+
+    /**
+     * Colonnes autorisées à l'assignation de masse
+     */
     protected $fillable = [
         'student_id',
         'class_id',
@@ -15,8 +20,7 @@ class Attendance extends Model
     ];
 
     /**
-     * Une absence appartient à un élève
-     * Relation : Attendance -> Student (Many To One)
+     * Relation avec l'élève
      */
     public function student()
     {
@@ -24,10 +28,10 @@ class Attendance extends Model
     }
 
     /**
-     * Une absence appartient à une classe
-     * Relation : Attendance -> Classes (Many To One)
+     * Relation avec la classe
+     * Renommé schoolClass car 'class' est un mot réservé PHP
      */
-    public function classe()
+    public function schoolClass()
     {
         return $this->belongsTo(Classes::class, 'class_id');
     }
