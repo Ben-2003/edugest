@@ -37,10 +37,11 @@ class Teacher extends Model
      * Un enseignant peut être responsable de plusieurs classes
      * Relation : Teacher -> Classes (One To Many)
      */
-    public function classes()
-    {
-        return $this->hasMany(Classes::class);
-    }
+  // Dans app/Models/Teacher.php
+public function classes()
+{
+    return $this->hasMany(Classes::class, 'teacher_id');
+}
 
     /**
      * Un enseignant peut avoir plusieurs créneaux dans l'emploi du temps

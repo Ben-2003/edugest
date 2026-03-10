@@ -237,6 +237,10 @@
             <div class="nav-icon"><i class="fas fa-user-plus"></i></div> Inscriptions
         </a>
 
+        <a href="{{ route('admin.parents.index') }}" class="nav-item {{ request()->routeIs('admin.parents.*') ? 'active' : '' }}">
+            <div class="nav-icon"><i class="fas fa-users"></i></div> Parents
+        </a>
+
         {{-- Section : Académique --}}
         <div class="nav-section-label">Académique</div>
         <a href="{{ route('admin.grades.index') }}"
@@ -247,8 +251,8 @@
            class="nav-item {{ request()->routeIs('admin.attendances.*') ? 'active' : '' }}">
             <div class="nav-icon"><i class="fas fa-calendar-check"></i></div> Absences
         </a>
-        <a href="{{ route('admin.report-cards.index') }}"
-           class="nav-item {{ request()->routeIs('admin.report-cards.*') ? 'active' : '' }}">
+        <a href="{{ route('admin.report_cards.index') }}"
+           class="nav-item {{ request()->routeIs('admin.report_cards.*') ? 'active' : '' }}">
             <div class="nav-icon"><i class="fas fa-file-alt"></i></div> Bulletins
         </a>
         <a href="{{ route('admin.schedules.index') }}"

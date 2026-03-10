@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 // Controllers Admin
 use App\Http\Controllers\Admin\DashboardController;
@@ -14,10 +15,13 @@ use App\Http\Controllers\Admin\ReportCardController;
 use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\ScheduleController;
+use App\Http\Controllers\Admin\ParentController;
 
-// Controllers Parent et Teacher
-use App\Http\Controllers\Parent\ParentDashboardController;
+// Controllers Teacher et Parent
 use App\Http\Controllers\Teacher\TeacherDashboardController;
+use App\Http\Controllers\Teacher\TeacherGradeController;
+use App\Http\Controllers\Teacher\TeacherAttendanceController;
+use App\Http\Controllers\Parent\ParentDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,64 +34,57 @@ Route::get('/', function () {
 
 /*
 |--------------------------------------------------------------------------
-| Routes ADMIN — seulement accessible par l'admin
+| Routes ADMIN
 |--------------------------------------------------------------------------
 */
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function () {
-
-    // Tableau de bord
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-    // CRUD complet pour chaque module
     Route::resource('students', StudentController::class);
     Route::resource('teachers', TeacherController::class);
     Route::resource('classes', ClassController::class);
     Route::resource('subjects', SubjectController::class);
     Route::resource('enrollments', EnrollmentController::class);
     Route::resource('grades', GradeController::class);
-    Route::resource('report-cards', ReportCardController::class);
     Route::resource('attendances', AttendanceController::class);
     Route::resource('payments', PaymentController::class);
+    Route::resource('report_cards', ReportCardController::class);
     Route::resource('schedules', ScheduleController::class);
-    Route::resource('report_cards', ReportCardController::class);});
-
-/*
-|--------------------------------------------------------------------------
-| Routes ENSEIGNANT — seulement accessible par l'enseignant
-|--------------------------------------------------------------------------
-*/
-/* ══ ESPACE ENSEIGNANT ══ */
-Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'role:enseignant'])->group(function () {
-
-    /* Dashboard */
-    Route::get('dashboard', [\App\Http\Controllers\Teacher\TeacherDashboardController::class, 'index'])
-         ->name('dashboard');
-
-    /* Notes — saisie limitée à ses classes */
-    Route::resource('grades', \App\Http\Controllers\Teacher\TeacherGradeController::class)
-         ->only(['index', 'create', 'store', 'destroy']);
-
-    /* Absences — appel limité à ses classes */
-    Route::resource('attendances', \App\Http\Controllers\Teacher\TeacherAttendanceController::class)
-         ->only(['index', 'create', 'store', 'destroy']);
-
-    /* Emploi du temps — lecture seule */
-    Route::get('schedules', [\App\Http\Controllers\Teacher\TeacherDashboardController::class, 'schedules'])
-         ->name('schedules');
+    Route::resource('parents',ParentController::class);
 });
 
 /*
 |--------------------------------------------------------------------------
-| Routes PARENT — seulement accessible par le parent
+| Routes ENSEIGNANT
+|--------------------------------------------------------------------------
+*/
+Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'role:enseignant'])->group(function () {
+    Route::get('/dashboard', [TeacherDashboardController::class, 'index'])->name('dashboard');
+    Route::resource('grades', TeacherGradeController::class)->only(['index', 'create', 'store', 'destroy']);
+    Route::resource('attendances', TeacherAttendanceController::class)->only(['index', 'create', 'store', 'destroy']);
+    Route::get('/schedules', [TeacherDashboardController::class, 'schedules'])->name('schedules');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Routes PARENT
 |--------------------------------------------------------------------------
 */
 Route::prefix('parent')->name('parent.')->middleware(['auth', 'role:parent'])->group(function () {
     Route::get('/dashboard', [ParentDashboardController::class, 'index'])->name('dashboard');
 });
 
+/* API interne — élèves par classe */
+Route::get('/api/classes/{class}/students', function(\App\Models\Classes $class) {
+    return $class->enrollments()->with('student')->get()->map(fn($e) => [
+        'id'         => $e->student->id,
+        'first_name' => $e->student->first_name,
+        'last_name'  => $e->student->last_name,
+    ]);
+})->middleware('auth');
+
 /*
 |--------------------------------------------------------------------------
-| Routes d'authentification Laravel UI
+| Authentification Laravel UI
 |--------------------------------------------------------------------------
 */
 Auth::routes();

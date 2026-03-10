@@ -85,6 +85,17 @@
                     <input type="password" name="password" placeholder="Minimum 8 caractères">
                     @error('password') <span class="error-msg">{{ $message }}</span> @enderror
                 </div>
+                <div class="form-group" style="margin-bottom:20px;">
+                    <label>Assigner une classe <span style="color:var(--muted); font-weight:400;">(optionnel)</span></label>
+                    <select name="class_id">
+                        <option value="">-- Aucune classe pour l'instant --</option>
+                        @foreach($classes as $classe)
+                            <option value="{{ $classe->id }}" {{ old('class_id') == $classe->id ? 'selected' : '' }}>
+                                {{ $classe->class_name }} — {{ $classe->level }}
+                            </option>
+                     @endforeach
+                    </select>
+                </div>
                 <div class="form-group">
                     <label>Confirmer le mot de passe <span>*</span></label>
                     <input type="password" name="password_confirmation" placeholder="Répéter le mot de passe">

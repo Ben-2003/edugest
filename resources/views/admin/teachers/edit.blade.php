@@ -82,9 +82,21 @@
                     @error('hire_date') <span class="error-msg">{{ $message }}</span> @enderror
                 </div>
             </div>
+              <div class="form-group">
+                    <div class="form-group" style="margin-bottom:20px;">
+                    <label>Classe assignée <span style="color:var(--muted); font-weight:400;">(optionnel)</span></label>
+                    <select name="class_id">
+                        <option value="">-- Aucune classe --</option>
+                        @foreach($classes as $classe)
+                         <option value="{{ $classe->id }}"
+                                {{ old('class_id', $teacher->classes->first()->id ?? '') == $classe->id ? 'selected' : '' }}>
+                                {{ $classe->class_name }} — {{ $classe->level }}
+                         </option>
+                     @endforeach
+                    </select>
+                </div>
             <div class="section-divider"><i class="fas fa-lock"></i> Changer le mot de passe (optionnel)</div>
             <div class="form-row">
-                <div class="form-group">
                     <label>Nouveau mot de passe</label>
                     <input type="password" name="password" placeholder="Laisser vide pour ne pas changer">
                     <span class="hint">Minimum 8 caractères</span>

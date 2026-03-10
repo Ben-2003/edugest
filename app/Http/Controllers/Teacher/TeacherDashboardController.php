@@ -58,4 +58,18 @@ public function index()
         'totalNotes', 'totalAbsences', 'monEmploiDuTemps'
     ));
 }
+
+public function schedules()
+{
+    $teacher = auth()->user()->teacher;
+
+    $monEmploiDuTemps = Schedule::with(['subject', 'schoolClass'])
+                                ->where('teacher_id', $teacher->id)
+                                ->orderByRaw("FIELD(day_of_week,'Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi')")
+                                ->orderBy('start_time')
+                                ->get()
+                                ->groupBy('day_of_week');
+
+    return view('teacher.schedules', compact('monEmploiDuTemps'));
+}
 }
