@@ -1,116 +1,155 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Espace Parent') — EduGest</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg:      #0f1117;
-            --surface: #1a1d27;
-            --surface2:#21253a;
-            --border:  #2a2d3e;
-            --text:    #e8eaf6;
-            --muted:   #6b7280;
-            --accent:  #3b82f6;   /* bleu parent */
-            --accent3: #ff6b6b;
-        }
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); display:flex; min-height:100vh; }
-
-        /* Sidebar */
-        .sidebar { width:260px; background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; position:fixed; height:100vh; }
-        .sidebar-logo { padding:24px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:12px; }
-        .logo-icon { width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg,var(--accent),#2563eb); display:flex; align-items:center; justify-content:center; font-size:18px; color:white; }
-        .logo-text { font-size:18px; font-weight:700; }
-        .logo-sub  { font-size:11px; color:var(--accent); font-weight:500; margin-top:1px; }
-
-        .sidebar-profile { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; }
-        .profile-avatar { width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,var(--accent),#2563eb); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; color:white; }
-        .profile-name { font-size:13px; font-weight:600; }
-        .profile-role { font-size:11px; color:var(--accent); }
-
-        .sidebar-nav { flex:1; padding:16px 12px; }
-        .nav-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; color:var(--muted); text-decoration:none; font-size:13px; font-weight:500; transition:all 0.2s; margin-bottom:2px; }
-        .nav-item:hover { background:var(--surface2); color:var(--text); }
-        .nav-item.active { background:rgba(59,130,246,0.15); color:var(--accent); }
-        .nav-item i { width:18px; text-align:center; }
-
-        .sidebar-footer { padding:16px 12px; border-top:1px solid var(--border); }
-        .btn-logout { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; color:var(--accent3); text-decoration:none; font-size:13px; font-weight:500; transition:all 0.2s; width:100%; border:none; background:none; cursor:pointer; }
-        .btn-logout:hover { background:rgba(255,107,107,0.1); }
-
-        /* Main */
-        .main { margin-left:260px; flex:1; display:flex; flex-direction:column; }
-        .topbar { background:var(--surface); border-bottom:1px solid var(--border); padding:16px 32px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:50; }
-        .page-title { font-size:18px; font-weight:700; }
-        .breadcrumb-nav { font-size:12px; color:var(--muted); }
-        .breadcrumb-nav a { color:var(--muted); text-decoration:none; }
-        .content { padding:32px; flex:1; }
-
-        .alert-success { background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.3); color:var(--accent); border-radius:12px; padding:12px 20px; margin-bottom:24px; display:flex; align-items:center; gap:10px; font-size:14px; }
-        .alert-error { background:rgba(255,107,107,0.1); border:1px solid rgba(255,107,107,0.3); color:var(--accent3); border-radius:12px; padding:12px 20px; margin-bottom:24px; display:flex; align-items:center; gap:10px; font-size:14px; }
-
-        @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
-    </style>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>@yield('title', 'Espace Parent') - EduGest</title>
+    <link rel="stylesheet" href="{{ asset('dist/assets/vendors/mdi/css/materialdesignicons.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('dist/assets/vendors/ti-icons/css/themify-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('dist/assets/vendors/css/vendor.bundle.base.css') }}">
+    <link rel="stylesheet" href="{{ asset('dist/assets/vendors/font-awesome/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('dist/assets/css/style.css') }}">
+    <link rel="shortcut icon" href="{{ asset('dist/assets/images/favicon.png') }}" />
     @yield('styles')
-</head>
-<body>
+  </head>
+  <body>
+    <div class="container-scroller">
 
-<aside class="sidebar">
-    <div class="sidebar-logo">
-        <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
-        <div>
-            <div class="logo-text">EduGest</div>
-            <div class="logo-sub">Espace Parent</div>
+      <!-- NAVBAR -->
+      <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
+          <a class="navbar-brand brand-logo" href="{{ route('parent.dashboard') }}">
+            <span style="color:white;font-size:18px;font-weight:700;">EduGest</span>
+          </a>
+          <a class="navbar-brand brand-logo-mini" href="{{ route('parent.dashboard') }}">
+            <span style="color:white;font-size:16px;font-weight:700;">EG</span>
+          </a>
         </div>
-    </div>
-    <div class="sidebar-profile">
-        <div class="profile-avatar">
-            {{ strtoupper(substr(auth()->user()->first_name ?? 'P', 0, 1)) }}
+        <div class="navbar-menu-wrapper d-flex align-items-stretch">
+          <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+            <span class="mdi mdi-menu"></span>
+          </button>
+          <ul class="navbar-nav navbar-nav-right">
+            <li class="nav-item nav-profile dropdown">
+              <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="nav-profile-img">
+                  <div style="width:36px;height:36px;border-radius:50%;background:#6c5ce7;display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:14px;">
+                    {{ strtoupper(substr(auth()->user()->first_name ?? auth()->user()->email, 0, 1)) }}
+                  </div>
+                  <span class="availability-status online"></span>
+                </div>
+                <div class="nav-profile-text">
+                  <p class="mb-1 text-black">{{ auth()->user()->first_name ?? auth()->user()->email }}</p>
+                </div>
+              </a>
+              <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                  <i class="mdi mdi-logout me-2 text-primary"></i> Deconnexion
+                </a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">
+                  @csrf
+                </form>
+              </div>
+            </li>
+            <li class="nav-item nav-logout d-none d-lg-block">
+              <a class="nav-link" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <i class="mdi mdi-power"></i>
+              </a>
+            </li>
+          </ul>
+          <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+            <span class="mdi mdi-menu"></span>
+          </button>
         </div>
-        <div>
-            <div class="profile-name">{{ auth()->user()->first_name }} {{ auth()->user()->last_name }}</div>
-            <div class="profile-role"><i class="fas fa-circle" style="font-size:7px;"></i> Parent</div>
-        </div>
-    </div>
-    <nav class="sidebar-nav">
-        <a href="{{ route('parent.dashboard') }}" class="nav-item {{ request()->routeIs('parent.dashboard') ? 'active' : '' }}">
-            <i class="fas fa-th-large"></i> Tableau de bord
-        </a>
-    </nav>
-    <div class="sidebar-footer">
-        <form action="{{ route('logout') }}" method="POST">
-            @csrf
-            <button type="submit" class="btn-logout">
-                <i class="fas fa-sign-out-alt"></i> Déconnexion
-            </button>
-        </form>
-    </div>
-</aside>
+      </nav>
 
-<div class="main">
-    <div class="topbar">
-        <div>
-            <div class="page-title">@yield('page-title', 'Tableau de bord')</div>
-            <div class="breadcrumb-nav">@yield('breadcrumb')</div>
-        </div>
-    </div>
-    <div class="content">
-        @if(session('success'))
-        <div class="alert-success"><i class="fas fa-check-circle"></i> {{ session('success') }}</div>
-        @endif
-        @if(session('error'))
-        <div class="alert-error"><i class="fas fa-exclamation-circle"></i> {{ session('error') }}</div>
-        @endif
-        @yield('content')
-    </div>
-</div>
+      <div class="container-fluid page-body-wrapper">
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-@yield('scripts')
-</body>
+        <!-- SIDEBAR -->
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+          <ul class="nav">
+            <li class="nav-item nav-profile">
+              <a href="#" class="nav-link">
+                <div class="nav-profile-image">
+                  <div style="width:44px;height:44px;border-radius:50%;background:#6c5ce7;display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:18px;">
+                    {{ strtoupper(substr(auth()->user()->first_name ?? auth()->user()->email, 0, 1)) }}
+                  </div>
+                  <span class="login-status online"></span>
+                </div>
+                <div class="nav-profile-text d-flex flex-column">
+                  <span class="font-weight-bold mb-2">{{ auth()->user()->first_name ?? auth()->user()->email }}</span>
+                  <span class="text-secondary text-small">Parent</span>
+                </div>
+              </a>
+            </li>
+            <li class="nav-item {{ request()->routeIs('parent.dashboard') ? 'active' : '' }}">
+              <a class="nav-link" href="{{ route('parent.dashboard') }}">
+                <span class="menu-title">Tableau de bord</span>
+                <i class="mdi mdi-home menu-icon"></i>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <!-- END SIDEBAR -->
+
+        <!-- MAIN PANEL -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="page-header">
+              <h3 class="page-title">
+                <span class="page-title-icon bg-gradient-primary text-white me-2">
+                  <i class="mdi mdi-home"></i>
+                </span>
+                @yield('page-title', 'Espace Parent')
+              </h3>
+              <nav aria-label="breadcrumb">
+                <ul class="breadcrumb">
+                  <li class="breadcrumb-item active" aria-current="page">
+                    <span>@yield('breadcrumb', 'Accueil')</span>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+
+            @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show">
+              <i class="mdi mdi-check-circle"></i> {{ session('success') }}
+              <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+            </div>
+            @endif
+            @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show">
+              <i class="mdi mdi-alert-circle"></i> {{ session('error') }}
+              <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+            </div>
+            @endif
+            @if($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show">
+              <i class="mdi mdi-alert-circle"></i> {{ $errors->first() }}
+              <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+            </div>
+            @endif
+
+            @yield('content')
+
+          </div>
+          <footer class="footer">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between">
+              <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">
+                EduGest &copy; {{ date('Y') }}
+              </span>
+            </div>
+          </footer>
+        </div>
+        <!-- END MAIN PANEL -->
+
+      </div>
+    </div>
+
+    <script src="{{ asset('dist/assets/vendors/js/vendor.bundle.base.js') }}"></script>
+    <script src="{{ asset('dist/assets/js/off-canvas.js') }}"></script>
+    <script src="{{ asset('dist/assets/js/misc.js') }}"></script>
+    @yield('scripts')
+  </body>
 </html>

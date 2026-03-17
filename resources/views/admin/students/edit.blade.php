@@ -1,89 +1,65 @@
 @extends('layouts.admin')
 
-@section('title', 'Modifier Élève')
-@section('page-title', 'Modifier l\'Élève')
-
-@section('breadcrumb')
-    <a href="{{ route('admin.dashboard') }}">Accueil</a> ›
-    <a href="{{ route('admin.students.index') }}">Élèves</a> ›
-    <span style="color:var(--text);">Modifier</span>
-@endsection
-
-@section('styles')
-<style>
-    .form-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; overflow:hidden; max-width:700px; animation:fadeUp 0.3s ease both; }
-    .form-header { padding:24px 28px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:12px; }
-    .form-icon { width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg,#f59e0b,#d97706); display:flex; align-items:center; justify-content:center; font-size:18px; color:white; }
-    .form-title { font-size:16px; font-weight:600; }
-    .form-subtitle { font-size:12px; color:var(--muted); margin-top:2px; }
-    .form-body { padding:28px; }
-    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px; }
-    .form-group { display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
-    label { font-size:13px; font-weight:600; }
-    label span { color:var(--accent3); }
-    input, select { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:11px 16px; color:var(--text); font-size:14px; font-family:'DM Sans',sans-serif; transition:all 0.2s; outline:none; width:100%; }
-    input:focus, select:focus { border-color:#f59e0b; box-shadow:0 0 0 3px rgba(245,158,11,0.1); }
-    input::placeholder { color:var(--muted); }
-    select option { background:var(--surface2); }
-    .error-msg { font-size:12px; color:var(--accent3); margin-top:4px; }
-    .form-actions { display:flex; gap:12px; margin-top:28px; padding-top:24px; border-top:1px solid var(--border); }
-    .btn-submit { display:flex; align-items:center; gap:8px; background:linear-gradient(135deg,#f59e0b,#d97706); color:white; border:none; border-radius:10px; padding:11px 24px; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.2s; }
-    .btn-submit:hover { transform:translateY(-1px); box-shadow:0 8px 20px rgba(245,158,11,0.3); }
-    .btn-cancel { display:flex; align-items:center; gap:8px; background:var(--surface2); color:var(--muted); border:1px solid var(--border); border-radius:10px; padding:11px 24px; font-size:14px; font-weight:600; text-decoration:none; transition:all 0.2s; }
-    .btn-cancel:hover { color:var(--text); }
-</style>
-@endsection
+@section('title', 'Modifier Eleve')
+@section('page-title', 'Modifier Eleve')
+@section('breadcrumb', 'Eleves > Modifier')
 
 @section('content')
-<div class="form-card">
-    <div class="form-header">
-        <div class="form-icon"><i class="fas fa-pen"></i></div>
-        <div>
-            <div class="form-title">Modifier : {{ $student->first_name }} {{ $student->last_name }}</div>
-            <div class="form-subtitle">Modifiez les informations de l'élève</div>
+<div class="row">
+    <div class="col-md-8 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Modifier les informations</h4>
+                <form action="{{ route('admin.students.update', $student) }}" method="POST">
+                    @csrf @method('PUT')
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Prenom</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="first_name" class="form-control" value="{{ old('first_name', $student->first_name) }}" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Nom</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="last_name" class="form-control" value="{{ old('last_name', $student->last_name) }}" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Date de naissance</label>
+                        <div class="col-sm-9">
+                            <input type="date" name="date_of_birth" class="form-control" value="{{ old('date_of_birth', $student->date_of_birth) }}" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Genre</label>
+                        <div class="col-sm-9">
+                            <select name="gender" class="form-control" required>
+                                <option value="M" {{ $student->gender == 'M' ? 'selected' : '' }}>Masculin</option>
+                                <option value="F" {{ $student->gender == 'F' ? 'selected' : '' }}>Feminin</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Lieu de naissance</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="place_of_birth" class="form-control" value="{{ old('place_of_birth', $student->place_of_birth) }}">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Adresse</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="address" class="form-control" value="{{ old('address', $student->address) }}">
+                        </div>
+                    </div>
+                    <div class="text-right mt-4">
+                        <a href="{{ route('admin.students.index') }}" class="btn btn-secondary me-2">Annuler</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="mdi mdi-check"></i> Mettre a jour
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
-    <div class="form-body">
-        <form action="{{ route('admin.students.update', $student) }}" method="POST">
-            @csrf @method('PUT')
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Prénom <span>*</span></label>
-                    <input type="text" name="first_name" value="{{ old('first_name', $student->first_name) }}">
-                    @error('first_name') <span class="error-msg">{{ $message }}</span> @enderror
-                </div>
-                <div class="form-group">
-                    <label>Nom <span>*</span></label>
-                    <input type="text" name="last_name" value="{{ old('last_name', $student->last_name) }}">
-                    @error('last_name') <span class="error-msg">{{ $message }}</span> @enderror
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Date de naissance <span>*</span></label>
-                    <input type="date" name="date_of_birth" value="{{ old('date_of_birth', \Carbon\Carbon::parse($student->date_of_birth)->format('Y-m-d')) }}">
-                    @error('date_of_birth') <span class="error-msg">{{ $message }}</span> @enderror
-                </div>
-                <div class="form-group">
-                    <label>Genre <span>*</span></label>
-                    <select name="gender">
-                        <option value="">-- Choisir --</option>
-                        <option value="M" {{ old('gender', $student->gender) == 'M' ? 'selected' : '' }}>Masculin</option>
-                        <option value="F" {{ old('gender', $student->gender) == 'F' ? 'selected' : '' }}>Féminin</option>
-                    </select>
-                    @error('gender') <span class="error-msg">{{ $message }}</span> @enderror
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Numéro d'inscription <span>*</span></label>
-                <input type="text" name="registration_number" value="{{ old('registration_number', $student->registration_number) }}">
-                @error('registration_number') <span class="error-msg">{{ $message }}</span> @enderror
-            </div>
-            <div class="form-actions">
-                <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Enregistrer les modifications</button>
-                <a href="{{ route('admin.students.show', $student) }}" class="btn-cancel"><i class="fas fa-times"></i> Annuler</a>
-            </div>
-        </form>
     </div>
 </div>
 @endsection

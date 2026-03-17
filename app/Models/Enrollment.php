@@ -10,9 +10,9 @@ class Enrollment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'student_id',
-        'class_id',
-        'enrollment_date',
+    'student_id', 'class_id', 'enrollment_date', 'status',
+    'tutor_name', 'tutor_relation', 'tutor_phone', 'tutor_email',
+    'blood_group', 'medical_notes', 'observations'
     ];
 
     /**

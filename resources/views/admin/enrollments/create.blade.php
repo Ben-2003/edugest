@@ -1,87 +1,229 @@
 @extends('layouts.admin')
 
-{{-- Titre de la page --}}
-@section('title', 'Inscrire un Élève')
-@section('page-title', 'Inscrire un Élève')
-
-{{-- Fil d'ariane --}}
-@section('breadcrumb')
-    <a href="{{ route('admin.dashboard') }}">Accueil</a> ›
-    <a href="{{ route('admin.enrollments.index') }}">Inscriptions</a> ›
-    <span style="color:var(--text);">Ajouter</span>
-@endsection
-
-@section('styles')
-<style>
-    .form-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; overflow:hidden; max-width:700px; animation:fadeUp 0.3s ease both; }
-    .form-header { padding:24px 28px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:12px; }
-    .form-icon { width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg,var(--accent),#5a52d5); display:flex; align-items:center; justify-content:center; font-size:18px; color:white; }
-    .form-title { font-size:16px; font-weight:600; }
-    .form-subtitle { font-size:12px; color:var(--muted); margin-top:2px; }
-    .form-body { padding:28px; }
-    .form-group { display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
-    label { font-size:13px; font-weight:600; }
-    label span { color:var(--accent3); }
-    input, select { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:11px 16px; color:var(--text); font-size:14px; font-family:'DM Sans',sans-serif; transition:all 0.2s; outline:none; width:100%; }
-    input:focus, select:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(108,99,255,0.1); }
-    select option { background:var(--surface2); }
-    .error-msg { font-size:12px; color:var(--accent3); margin-top:4px; }
-    .form-actions { display:flex; gap:12px; margin-top:28px; padding-top:24px; border-top:1px solid var(--border); }
-    .btn-submit { display:flex; align-items:center; gap:8px; background:linear-gradient(135deg,var(--accent),#5a52d5); color:white; border:none; border-radius:10px; padding:11px 24px; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.2s; }
-    .btn-submit:hover { transform:translateY(-1px); box-shadow:0 8px 20px rgba(108,99,255,0.3); }
-    .btn-cancel { display:flex; align-items:center; gap:8px; background:var(--surface2); color:var(--muted); border:1px solid var(--border); border-radius:10px; padding:11px 24px; font-size:14px; font-weight:600; text-decoration:none; transition:all 0.2s; }
-    .btn-cancel:hover { color:var(--text); }
-</style>
-@endsection
+@section('title', 'Inscrire un Eleve')
+@section('page-title', 'Inscrire un Eleve')
+@section('breadcrumb', 'Inscriptions > Nouvelle inscription')
 
 @section('content')
-<div class="form-card">
-    <div class="form-header">
-        <div class="form-icon"><i class="fas fa-user-plus"></i></div>
-        <div>
-            <div class="form-title">Nouvelle inscription</div>
-            <div class="form-subtitle">Affecter un élève à une classe</div>
+<div class="row">
+    <div class="col-md-10 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">
+                    <i class="mdi mdi-account-plus text-primary me-2"></i> Fiche d'inscription
+                    <small class="text-muted d-block mt-1" style="font-size:13px;">
+                        Les champs marques <span class="text-danger">*</span> sont obligatoires
+                    </small>
+                </h4>
+
+                <form action="{{ route('admin.enrollments.store') }}" method="POST">
+                    @csrf
+
+                    {{-- SECTION 1 : Informations scolaires --}}
+                    <div class="row mt-4">
+                        <div class="col-md-12 mb-2">
+                            <h5 class="text-primary border-bottom pb-2">
+                                <i class="mdi mdi-school me-2"></i> Informations scolaires
+                            </h5>
+                        </div>
+
+                        {{-- Eleve --}}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Eleve <span class="text-danger">*</span></label>
+                                <select name="student_id" class="form-control {{ $errors->has('student_id') ? 'is-invalid' : '' }}" required>
+                                    <option value="">-- Choisir un eleve --</option>
+                                    @foreach($students as $student)
+                                    <option value="{{ $student->id }}" {{ old('student_id') == $student->id ? 'selected' : '' }}>
+                                        {{ $student->last_name }} {{ $student->first_name }}
+                                        — {{ $student->registration_number }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                                @error('student_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        {{-- Classe --}}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Classe <span class="text-danger">*</span></label>
+                                <select name="class_id" class="form-control {{ $errors->has('class_id') ? 'is-invalid' : '' }}" required>
+                                    <option value="">-- Choisir une classe --</option>
+                                    @foreach($classes as $class)
+                                    <option value="{{ $class->id }}" {{ old('class_id') == $class->id ? 'selected' : '' }}>
+                                        {{ $class->class_name }}
+                                        @if(isset($class->level)) — {{ $class->level }} @endif
+                                        @if($class->schoolYear) ({{ $class->schoolYear->year_name }}) @endif
+                                    </option>
+                                    @endforeach
+                                </select>
+                                @error('class_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        {{-- Date d'inscription --}}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Date d'inscription <span class="text-danger">*</span></label>
+                                <input type="date" name="enrollment_date"
+                                    class="form-control {{ $errors->has('enrollment_date') ? 'is-invalid' : '' }}"
+                                    value="{{ old('enrollment_date', date('Y-m-d')) }}" required>
+                                @error('enrollment_date')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        {{-- Statut --}}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Statut <span class="text-danger">*</span></label>
+                                <select name="status" class="form-control" required>
+                                    <option value="actif" {{ old('status', 'actif') == 'actif' ? 'selected' : '' }}>Actif</option>
+                                    <option value="inactif" {{ old('status') == 'inactif' ? 'selected' : '' }}>Inactif</option>
+                                    <option value="transfere" {{ old('status') == 'transfere' ? 'selected' : '' }}>Transfere</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- SECTION 2 : Informations du parent/tuteur --}}
+                    <div class="row mt-3">
+                        <div class="col-md-12 mb-2">
+                            <h5 class="text-success border-bottom pb-2">
+                                <i class="mdi mdi-account-supervisor me-2"></i> Informations du parent / tuteur
+                            </h5>
+                        </div>
+
+                        {{-- Nom tuteur --}}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Nom du tuteur <span class="text-danger">*</span></label>
+                                <input type="text" name="tutor_name"
+                                    class="form-control {{ $errors->has('tutor_name') ? 'is-invalid' : '' }}"
+                                    value="{{ old('tutor_name') }}"
+                                    placeholder="Nom complet du tuteur" required>
+                                @error('tutor_name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        {{-- Lien de parente --}}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Lien de parente <span class="text-danger">*</span></label>
+                                <select name="tutor_relation" class="form-control {{ $errors->has('tutor_relation') ? 'is-invalid' : '' }}" required>
+                                    <option value="">-- Choisir --</option>
+                                    <option value="Pere" {{ old('tutor_relation') == 'Pere' ? 'selected' : '' }}>Pere</option>
+                                    <option value="Mere" {{ old('tutor_relation') == 'Mere' ? 'selected' : '' }}>Mere</option>
+                                    <option value="Tuteur" {{ old('tutor_relation') == 'Tuteur' ? 'selected' : '' }}>Tuteur</option>
+                                    <option value="Autre" {{ old('tutor_relation') == 'Autre' ? 'selected' : '' }}>Autre</option>
+                                </select>
+                                @error('tutor_relation')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        {{-- Telephone tuteur --}}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Telephone <span class="text-danger">*</span></label>
+                                <input type="text" name="tutor_phone"
+                                    class="form-control {{ $errors->has('tutor_phone') ? 'is-invalid' : '' }}"
+                                    value="{{ old('tutor_phone') }}"
+                                    placeholder="Ex: 6XXXXXXXX" required>
+                                @error('tutor_phone')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        {{-- Email tuteur --}}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Email du tuteur</label>
+                                <input type="email" name="tutor_email"
+                                    class="form-control {{ $errors->has('tutor_email') ? 'is-invalid' : '' }}"
+                                    value="{{ old('tutor_email') }}"
+                                    placeholder="email@exemple.com">
+                                @error('tutor_email')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- SECTION 3 : Informations medicales --}}
+                    <div class="row mt-3">
+                        <div class="col-md-12 mb-2">
+                            <h5 class="text-warning border-bottom pb-2">
+                                <i class="mdi mdi-medical-bag me-2"></i> Informations medicales
+                                <small class="text-muted" style="font-size:12px;">(optionnel)</small>
+                            </h5>
+                        </div>
+
+                        {{-- Groupe sanguin --}}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Groupe sanguin</label>
+                                <select name="blood_group" class="form-control">
+                                    <option value="">-- Choisir --</option>
+                                    @foreach(['A+','A-','B+','B-','AB+','AB-','O+','O-'] as $group)
+                                    <option value="{{ $group }}" {{ old('blood_group') == $group ? 'selected' : '' }}>
+                                        {{ $group }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        {{-- Allergies --}}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Allergies / Maladies connues</label>
+                                <input type="text" name="medical_notes" class="form-control"
+                                    value="{{ old('medical_notes') }}"
+                                    placeholder="Ex: Asthme, allergie aux arachides...">
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- SECTION 4 : Observations --}}
+                    <div class="row mt-3">
+                        <div class="col-md-12 mb-2">
+                            <h5 class="text-info border-bottom pb-2">
+                                <i class="mdi mdi-note-text me-2"></i> Observations
+                            </h5>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Remarques / Observations</label>
+                                <textarea name="observations" class="form-control" rows="3"
+                                    placeholder="Informations complementaires...">{{ old('observations') }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Boutons --}}
+                    <div class="text-right mt-4 border-top pt-3">
+                        <a href="{{ route('admin.enrollments.index') }}" class="btn btn-secondary me-2">
+                            <i class="mdi mdi-close"></i> Annuler
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="mdi mdi-check"></i> Inscrire l'eleve
+                        </button>
+                    </div>
+
+                </form>
+            </div>
         </div>
-    </div>
-    <div class="form-body">
-        <form action="{{ route('admin.enrollments.store') }}" method="POST">
-            @csrf
-            <div class="form-group">
-                <label>Élève <span>*</span></label>
-                <select name="student_id">
-                    <option value="">-- Choisir un élève --</option>
-                    @foreach($students as $student)
-                        <option value="{{ $student->id }}" {{ old('student_id') == $student->id ? 'selected' : '' }}>
-                            {{ $student->last_name }} {{ $student->first_name }} — {{ $student->registration_number }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('student_id') <span class="error-msg">{{ $message }}</span> @enderror
-            </div>
-            <div class="form-group">
-                <label>Classe <span>*</span></label>
-                <select name="class_id">
-                    <option value="">-- Choisir une classe --</option>
-                    @foreach($classes as $class)
-                        <option value="{{ $class->id }}" {{ old('class_id') == $class->id ? 'selected' : '' }}>
-                            {{ $class->class_name }} — {{ $class->level }}
-                            {{ $class->schoolYear ? '(' . $class->schoolYear->year_label . ')' : '' }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('class_id') <span class="error-msg">{{ $message }}</span> @enderror
-            </div>
-            <div class="form-group">
-                <label>Date d'inscription <span>*</span></label>
-                <input type="date" name="enrollment_date"
-                       value="{{ old('enrollment_date', date('Y-m-d')) }}">
-                @error('enrollment_date') <span class="error-msg">{{ $message }}</span> @enderror
-            </div>
-            <div class="form-actions">
-                <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Inscrire l'élève</button>
-                <a href="{{ route('admin.enrollments.index') }}" class="btn-cancel"><i class="fas fa-times"></i> Annuler</a>
-            </div>
-        </form>
     </div>
 </div>
 @endsection

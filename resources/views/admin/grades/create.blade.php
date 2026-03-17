@@ -1,188 +1,176 @@
 @extends('layouts.admin')
 
-{{-- Titre de la page --}}
 @section('title', 'Ajouter une Note')
 @section('page-title', 'Ajouter une Note')
-
-{{-- Fil d'ariane --}}
-@section('breadcrumb')
-    <a href="{{ route('admin.dashboard') }}">Accueil</a> ›
-    <a href="{{ route('admin.grades.index') }}">Notes</a> ›
-    <span style="color:var(--text);">Ajouter</span>
-@endsection
-
-@section('styles')
-<style>
-    .form-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; overflow:hidden; max-width:700px; animation:fadeUp 0.3s ease both; }
-    .form-header { padding:24px 28px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:12px; }
-    .form-icon { width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg,var(--accent),#5a52d5); display:flex; align-items:center; justify-content:center; font-size:18px; color:white; }
-    .form-title { font-size:16px; font-weight:600; }
-    .form-subtitle { font-size:12px; color:var(--muted); margin-top:2px; }
-    .form-body { padding:28px; }
-    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px; }
-    .form-group { display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
-    label { font-size:13px; font-weight:600; }
-    label span { color:var(--accent3); }
-    input, select { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:11px 16px; color:var(--text); font-size:14px; font-family:'DM Sans',sans-serif; transition:all 0.2s; outline:none; width:100%; }
-    input:focus, select:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(108,99,255,0.1); }
-    input::placeholder { color:var(--muted); }
-    select option { background:var(--surface2); }
-    .error-msg { font-size:12px; color:var(--accent3); margin-top:4px; }
-
-    /* Indicateur visuel de la note en temps réel */
-    .score-preview { display:flex; align-items:center; gap:12px; margin-top:8px; }
-    .score-bar { flex:1; height:8px; background:var(--surface2); border-radius:4px; overflow:hidden; }
-    .score-bar-fill { height:100%; border-radius:4px; transition:width 0.3s, background 0.3s; }
-    .score-label { font-size:12px; font-weight:700; width:60px; text-align:right; }
-
-    .form-actions { display:flex; gap:12px; margin-top:28px; padding-top:24px; border-top:1px solid var(--border); }
-    .btn-submit { display:flex; align-items:center; gap:8px; background:linear-gradient(135deg,var(--accent),#5a52d5); color:white; border:none; border-radius:10px; padding:11px 24px; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.2s; }
-    .btn-submit:hover { transform:translateY(-1px); box-shadow:0 8px 20px rgba(108,99,255,0.3); }
-    .btn-cancel { display:flex; align-items:center; gap:8px; background:var(--surface2); color:var(--muted); border:1px solid var(--border); border-radius:10px; padding:11px 24px; font-size:14px; font-weight:600; text-decoration:none; transition:all 0.2s; }
-    .btn-cancel:hover { color:var(--text); }
-</style>
-@endsection
+@section('breadcrumb', 'Notes > Ajouter')
 
 @section('content')
-<div class="form-card">
-    <div class="form-header">
-        <div class="form-icon"><i class="fas fa-star"></i></div>
-        <div>
-            <div class="form-title">Nouvelle note</div>
-            <div class="form-subtitle">Saisir la note d'un élève pour une matière</div>
-        </div>
-    </div>
-    <div class="form-body">
-        <form action="{{ route('admin.grades.store') }}" method="POST">
-            @csrf
+<div class="row">
+    <div class="col-md-8 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">
+                    <i class="mdi mdi-star text-primary me-2"></i> Nouvelle note
+                    <small class="text-muted d-block mt-1" style="font-size:13px;">
+                        Les champs marques <span class="text-danger">*</span> sont obligatoires
+                    </small>
+                </h4>
 
-            {{-- Sélection de l'élève et de la matière --}}
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Élève <span>*</span></label>
-                    <select name="student_id">
-                        <option value="">-- Choisir un élève --</option>
-                        @foreach($students as $student)
-                            <option value="{{ $student->id }}" {{ old('student_id') == $student->id ? 'selected' : '' }}>
-                                {{ $student->last_name }} {{ $student->first_name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('student_id') <span class="error-msg">{{ $message }}</span> @enderror
-                </div>
-                <div class="form-group">
-                    <label>Matière <span>*</span></label>
-                    <select name="subject_id">
-                        <option value="">-- Choisir une matière --</option>
-                        @foreach($subjects as $subject)
-                            <option value="{{ $subject->id }}" {{ old('subject_id') == $subject->id ? 'selected' : '' }}>
-                                {{ $subject->subject_name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('subject_id') <span class="error-msg">{{ $message }}</span> @enderror
-                </div>
-            </div>
+                <form action="{{ route('admin.grades.store') }}" method="POST">
+                    @csrf
 
-            {{-- Sélection de la classe et de l'année scolaire --}}
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Classe <span>*</span></label>
-                    <select name="class_id">
-                        <option value="">-- Choisir une classe --</option>
-                        @foreach($classes as $class)
-                            <option value="{{ $class->id }}" {{ old('class_id') == $class->id ? 'selected' : '' }}>
-                                {{ $class->class_name }} — {{ $class->level }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('class_id') <span class="error-msg">{{ $message }}</span> @enderror
-                </div>
-                <div class="form-group">
-                    <label>Année scolaire <span>*</span></label>
-                    <select name="school_year_id">
-                        <option value="">-- Choisir une année --</option>
-                        @foreach($schoolYears as $year)
-                            <option value="{{ $year->id }}" {{ old('school_year_id') == $year->id ? 'selected' : '' }}>
-                                {{ $year->year_label }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('school_year_id') <span class="error-msg">{{ $message }}</span> @enderror
-                </div>
-            </div>
+                    <div class="row">
 
-            {{-- Trimestre et note --}}
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Trimestre <span>*</span></label>
-                    <select name="term">
-                        <option value="">-- Choisir le trimestre --</option>
-                        <option value="Trimestre 1" {{ old('term') == 'Trimestre 1' ? 'selected' : '' }}>Trimestre 1</option>
-                        <option value="Trimestre 2" {{ old('term') == 'Trimestre 2' ? 'selected' : '' }}>Trimestre 2</option>
-                        <option value="Trimestre 3" {{ old('term') == 'Trimestre 3' ? 'selected' : '' }}>Trimestre 3</option>
-                    </select>
-                    @error('term') <span class="error-msg">{{ $message }}</span> @enderror
-                </div>
-                <div class="form-group">
-                    <label>Note <span>*</span> <small style="color:var(--muted); font-weight:400;">(sur 20)</small></label>
-                    <input type="number" name="score" id="scoreInput"
-                           value="{{ old('score') }}" min="0" max="20" step="0.25"
-                           placeholder="Ex: 14.50">
-                    {{-- Barre de progression visuelle de la note --}}
-                    <div class="score-preview">
-                        <div class="score-bar">
-                            <div class="score-bar-fill" id="scoreBarFill" style="width:0%; background:var(--accent3);"></div>
+                        {{-- Annee scolaire --}}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Annee scolaire <span class="text-danger">*</span></label>
+                                <select name="school_year_id" class="form-control {{ $errors->has('school_year_id') ? 'is-invalid' : '' }}" required>
+                                    <option value="">-- Choisir une annee --</option>
+                                    @foreach($schoolYears as $year)
+                                    <option value="{{ $year->id }}" {{ old('school_year_id') == $year->id ? 'selected' : '' }}>
+                                        {{ $year->year_name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                                @error('school_year_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
                         </div>
-                        <span class="score-label" id="scoreLabel" style="color:var(--muted);">— /20</span>
-                    </div>
-                    @error('score') <span class="error-msg">{{ $message }}</span> @enderror
-                </div>
-            </div>
 
-            <div class="form-actions">
-                <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Enregistrer la note</button>
-                <a href="{{ route('admin.grades.index') }}" class="btn-cancel"><i class="fas fa-times"></i> Annuler</a>
+                        {{-- Classe --}}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Classe <span class="text-danger">*</span></label>
+                                <select name="class_id" id="class_id" class="form-control {{ $errors->has('class_id') ? 'is-invalid' : '' }}" required>
+                                    <option value="">-- Choisir une classe --</option>
+                                    @foreach($classes as $class)
+                                    <option value="{{ $class->id }}" {{ old('class_id') == $class->id ? 'selected' : '' }}>
+                                        {{ $class->class_name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                                @error('class_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                        </div>
+
+                        {{-- Eleve -- charge dynamiquement selon la classe --}}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Eleve <span class="text-danger">*</span></label>
+                                <select name="student_id" id="student_id" class="form-control {{ $errors->has('student_id') ? 'is-invalid' : '' }}" required>
+                                    <option value="">-- Choisir d'abord une classe --</option>
+                                </select>
+                                @error('student_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                        </div>
+
+                        {{-- Matiere --}}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Matiere <span class="text-danger">*</span></label>
+                                <select name="subject_id" class="form-control {{ $errors->has('subject_id') ? 'is-invalid' : '' }}" required>
+                                    <option value="">-- Choisir une matiere --</option>
+                                    @foreach($subjects as $subject)
+                                    <option value="{{ $subject->id }}" {{ old('subject_id') == $subject->id ? 'selected' : '' }}>
+                                        {{ $subject->subject_name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                                @error('subject_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                        </div>
+
+                        {{-- Note --}}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Note /20 <span class="text-danger">*</span></label>
+                                <input type="number" name="score" step="0.5" min="0" max="20"
+                                    class="form-control {{ $errors->has('score') ? 'is-invalid' : '' }}"
+                                    value="{{ old('score') }}" placeholder="Ex: 14.5" required>
+                                @error('score')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                        </div>
+
+                        {{-- Type d'evaluation --}}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Type d'evaluation</label>
+                                <select name="grade_type" class="form-control">
+                                    <option value="">-- Choisir --</option>
+                                    <option value="Devoir" {{ old('grade_type') == 'Devoir' ? 'selected' : '' }}>Devoir</option>
+                                    <option value="Composition" {{ old('grade_type') == 'Composition' ? 'selected' : '' }}>Composition</option>
+                                    <option value="Examen" {{ old('grade_type') == 'Examen' ? 'selected' : '' }}>Examen</option>
+                                    <option value="Interrogation" {{ old('grade_type') == 'Interrogation' ? 'selected' : '' }}>Interrogation</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        {{-- Trimestre --}}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Trimestre <span class="text-danger">*</span></label>
+                                <select name="term" class="form-control {{ $errors->has('term') ? 'is-invalid' : '' }}" required>
+                                    <option value="">-- Choisir --</option>
+                                    <option value="1" {{ old('term') == '1' ? 'selected' : '' }}>Trimestre 1</option>
+                                    <option value="2" {{ old('term') == '2' ? 'selected' : '' }}>Trimestre 2</option>
+                                    <option value="3" {{ old('term') == '3' ? 'selected' : '' }}>Trimestre 3</option>
+                                </select>
+                                @error('term')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                        </div>
+
+                        {{-- Commentaire --}}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Commentaire</label>
+                                <input type="text" name="comment" class="form-control"
+                                    value="{{ old('comment') }}" placeholder="Observation optionnelle">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {{-- Boutons --}}
+                    <div class="text-right mt-4 border-top pt-3">
+                        <a href="{{ route('admin.grades.index') }}" class="btn btn-secondary me-2">
+                            <i class="mdi mdi-close"></i> Annuler
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="mdi mdi-check"></i> Enregistrer
+                        </button>
+                    </div>
+
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 @endsection
 
 @section('scripts')
 <script>
-    /* ── Mise à jour visuelle de la barre de note en temps réel ──
-       Couleur rouge < 10 | orange 10-12 | violet 12-16 | vert >= 16 */
-    document.getElementById('scoreInput').addEventListener('input', function() {
-        const score = parseFloat(this.value);
-        const fill  = document.getElementById('scoreBarFill');
-        const label = document.getElementById('scoreLabel');
+{{-- Chargement dynamique des eleves selon la classe selectionnee --}}
+document.getElementById('class_id').addEventListener('change', function() {
+    const classId = this.value;
+    const studentSelect = document.getElementById('student_id');
+    studentSelect.innerHTML = '<option value="">-- Chargement... --</option>';
 
-        if (isNaN(score)) {
-            fill.style.width = '0%';
-            label.textContent = '— /20';
-            label.style.color = 'var(--muted)';
-            return;
-        }
+    if (!classId) {
+        studentSelect.innerHTML = '<option value="">-- Choisir d\'abord une classe --</option>';
+        return;
+    }
 
-        const pct = Math.min(100, (score / 20) * 100);
-        fill.style.width = pct + '%';
-        label.textContent = score + '/20';
-
-        /* Couleur selon la note */
-        if (score >= 16) {
-            fill.style.background = 'var(--accent2)';
-            label.style.color = 'var(--accent2)';
-        } else if (score >= 12) {
-            fill.style.background = 'var(--accent)';
-            label.style.color = 'var(--accent)';
-        } else if (score >= 10) {
-            fill.style.background = '#f59e0b';
-            label.style.color = '#f59e0b';
-        } else {
-            fill.style.background = 'var(--accent3)';
-            label.style.color = 'var(--accent3)';
-        }
-    });
+    fetch(`/api/classes/${classId}/students`)
+        .then(res => res.json())
+        .then(data => {
+            studentSelect.innerHTML = '<option value="">-- Choisir un eleve --</option>';
+            data.forEach(student => {
+                studentSelect.innerHTML += `<option value="${student.id}">${student.last_name} ${student.first_name}</option>`;
+            });
+        })
+        .catch(() => {
+            studentSelect.innerHTML = '<option value="">Erreur de chargement</option>';
+        });
+});
 </script>
 @endsection

@@ -29,7 +29,14 @@ use App\Http\Controllers\Parent\ParentDashboardController;
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () {
-    return redirect()->route('login');
+    // Si déjà connecté → redirige vers son dashboard
+    if (auth()->check()) {
+        $role = auth()->user()->role->role_name;
+        if ($role === 'admin') return redirect()->route('admin.dashboard');
+        if ($role === 'enseignant') return redirect()->route('teacher.dashboard');
+        if ($role === 'parent') return redirect()->route('parent.dashboard');
+    }
+    return view('welcome');
 });
 
 /*
