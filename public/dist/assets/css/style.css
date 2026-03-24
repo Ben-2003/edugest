@@ -124,6 +124,7 @@
     opacity: 1;
   }
 }
+
 @-webkit-keyframes flash {
   0% {
     opacity: 1;

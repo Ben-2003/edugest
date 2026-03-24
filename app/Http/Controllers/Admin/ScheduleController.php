@@ -100,6 +100,15 @@ class ScheduleController extends Controller
     }
 
     /**
+ * Affiche le detail d'un creneau
+ */
+public function show(Schedule $schedule)
+{
+    $schedule->load(['schoolClass', 'subject', 'teacher.user']);
+    return view('admin.schedules.show', compact('schedule'));
+}
+
+    /**
      * Met à jour un créneau existant
      */
     public function update(Request $request, Schedule $schedule)

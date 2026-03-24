@@ -17,8 +17,8 @@
     <div class="container-scroller">
 
       <!-- NAVBAR -->
-      <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row" style="background-color:#87CEEB">
-        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
+      <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row" style="background: linear-gradient(135deg, #74b9ff, #a29bfe);">
+        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start" style="background: linear-gradient(135deg, #89f7fe, #66a6ff);">
           <a class="navbar-brand brand-logo" href="{{ route('admin.dashboard') }}">
             <span style="color:blue;font-size:18px;font-weight:700;">EduGest</span>
           </a>
@@ -68,21 +68,10 @@
       <div class="container-fluid page-body-wrapper">
 
         <!-- SIDEBAR -->
-        <nav class="sidebar sidebar-offcanvas" id="sidebar" style="background-color:#FFFFFF">
+        <nav class="sidebar sidebar-offcanvas" id="sidebar" style="background: linear-gradient(135deg, #8e2de2, #c2a8ff); color: white;box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
           <ul class="nav">
             <li class="nav-item nav-profile">
-              <a href="#" class="nav-link">
-                <div class="nav-profile-image">
-                  <div style="width:44px;height:44px;border-radius:50%;background:#e74c3c;display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:18px;">
-                    {{ strtoupper(substr(auth()->user()->first_name ?? auth()->user()->email, 0, 1)) }}
-                  </div>
-                  <span class="login-status online"></span>
-                </div>
-                <div class="nav-profile-text d-flex flex-column">
-                  <span class="font-weight-bold mb-2">{{ auth()->user()->first_name ?? auth()->user()->email }}</span>
-                  <span class="text-secondary text-small">Administrateur</span>
-                </div>
-              </a>
+
             </li>
             <li class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
               <a class="nav-link" href="{{ route('admin.dashboard') }}">
