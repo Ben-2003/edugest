@@ -34,19 +34,15 @@ class TeacherGradeController extends Controller
     /**
      * Formulaire de saisie de note
      */
-    public function create()
-    {
-        $teacher = auth()->user()->teacher;
+public function create()
+{
+    $teacher    = auth()->user()->teacher;
+    $mesClasses = Classes::where('teacher_id', $teacher->id)->get();
+    $subjects   = Subject::orderBy('subject_name')->get();
+    $schoolYears = \App\Models\SchoolYear::orderBy('year_label')->get(); // ✅ AJOUTER
 
-        // Uniquement ses classes
-        $mesClasses = Classes::where('teacher_id', $teacher->id)->get();
-
-        // Matières liées à ses classes
-        $subjects = Subject::orderBy('subject_name')->get();
-
-
-        return view('teacher.grades.create', compact('mesClasses', 'subjects'));
-    }
+    return view('teacher.grades.create', compact('mesClasses', 'subjects', 'schoolYears'));
+}
 
     /**
      * Enregistre une note
@@ -92,6 +88,54 @@ class TeacherGradeController extends Controller
         return redirect()->route('teacher.grades.index')
                          ->with('success', 'Note enregistrée avec succès !');
     }
+
+    /**
+ * Affiche le detail d'une note
+ */
+public function show(Grade $grade)
+{
+    $teacher = auth()->user()->teacher;
+    // Verifier que la note appartient a une classe de cet enseignant
+    $grade->load(['student', 'subject', 'schoolClass', 'schoolYear']);
+    return view('teacher.grades.show', compact('grade'));
+}
+
+/**
+ * Formulaire de modification d'une note
+ */
+public function edit(Grade $grade)
+{
+    $teacher = auth()->user()->teacher;
+    $mesClasses = Classes::where('teacher_id', $teacher->id)->get();
+    $subjects = Subject::orderBy('subject_name')->get();
+    return view('teacher.grades.edit', compact('grade', 'mesClasses', 'subjects'));
+}
+
+/**
+ * Met a jour une note
+ */
+public function update(Request $request, Grade $grade)
+{
+    $teacher = auth()->user()->teacher;
+    $request->validate([
+        'student_id'     => 'required|exists:students,id',
+        'subject_id'     => 'required|exists:subjects,id',
+        'class_id'       => 'required|exists:classes,id',
+        'school_year_id' => 'required|exists:school_years,id',
+        'score'          => 'required|numeric|min:0|max:20',
+        'term'           => 'required|string|max:50',
+    ]);
+    // Verifier que la classe appartient bien a cet enseignant
+    $classeOk = Classes::where('id', $request->class_id)
+                       ->where('teacher_id', $teacher->id)
+                       ->exists();
+    if (!$classeOk) {
+        return back()->withErrors(['class_id' => 'Vous ne pouvez pas modifier une note pour cette classe.']);
+    }
+    $grade->update($request->all());
+    return redirect()->route('teacher.grades.index')
+                     ->with('success', 'Note modifiee avec succes !');
+}
 
     /**
      * Supprime une note

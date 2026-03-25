@@ -68,7 +68,7 @@
       <div class="container-fluid page-body-wrapper">
 
         <!-- SIDEBAR -->
-        <nav class="sidebar sidebar-offcanvas" id="sidebar" style="background: linear-gradient(135deg, #8e2de2, #c2a8ff); color: white;box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+        <nav class="sidebar sidebar-offcanvas" id="sidebar" style="background: white;">
           <ul class="nav">
             <li class="nav-item nav-profile">
 

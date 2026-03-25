@@ -128,6 +128,10 @@
                   </li>
                 </ul>
               </nav>
+
+              {{-- ✅ CORRECTION : bouton topbar rendu visible ici --}}
+              @yield('topbar-actions')
+
             </div>
 
             @if(session('success'))

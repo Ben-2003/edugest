@@ -66,7 +66,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 */
 Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'role:enseignant'])->group(function () {
     Route::get('/dashboard', [TeacherDashboardController::class, 'index'])->name('dashboard');
-    Route::resource('grades', TeacherGradeController::class)->only(['index', 'create', 'store', 'destroy']);
+    Route::resource('grades', TeacherGradeController::class)->only(['index', 'create', 'store', 'edit', 'update', 'show', 'destroy']);
     Route::resource('attendances', TeacherAttendanceController::class)->only(['index', 'create', 'store', 'destroy']);
     Route::get('/schedules', [TeacherDashboardController::class, 'schedules'])->name('schedules');
 });
