@@ -34,6 +34,8 @@
     tr:last-child td { border-bottom:none; }
     tr:hover td { background:rgba(16,185,129,0.03); }
 
+    
+
     .status-badge { display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600; }
     .status-present { background:rgba(16,185,129,0.15); color:var(--accent); }
     .status-absent  { background:rgba(255,107,107,0.15); color:var(--accent3); }

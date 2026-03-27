@@ -57,6 +57,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::resource('report_cards', ReportCardController::class);
     Route::resource('schedules', ScheduleController::class);
     Route::resource('parents',ParentController::class);
+
+
+Route::get('/report_cards/{reportCard}/pdf', [ReportCardController::class, 'pdf'])->name('report_cards.pdf');
+
+
+Route::get('/payments/{payment}/pdf', [PaymentController::class, 'pdf'])->name('payments.pdf');
 });
 
 /*

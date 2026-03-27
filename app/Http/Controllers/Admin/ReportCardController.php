@@ -131,4 +131,27 @@ class ReportCardController extends Controller
         return redirect()->route('admin.report_cards.index')
                          ->with('success', 'Bulletin supprimé avec succès !');
     }
+
+
+    /**
+ * Genere le PDF du bulletin
+ */
+public function pdf(ReportCard $reportCard)
+{
+    $reportCard->load(['student', 'schoolClass', 'schoolYear']);
+
+    // Notes de l'eleve pour ce trimestre
+    $grades = \App\Models\Grade::with('subject')
+                ->where('student_id', $reportCard->student_id)
+                ->where('class_id', $reportCard->class_id)
+                ->where('school_year_id', $reportCard->school_year_id)
+                ->where('term', $reportCard->term)
+                ->get();
+
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.report_cards.pdf', compact('reportCard', 'grades'));
+    $pdf->setPaper('A4', 'portrait');
+
+    return $pdf->download('bulletin_' . $reportCard->student->registration_number . '_' . $reportCard->term . '.pdf');
 }
+}
+

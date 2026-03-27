@@ -127,4 +127,18 @@ class ParentController extends Controller
         return redirect()->route('admin.parents.index')
                          ->with('success', 'Parent supprimé avec succès !');
     }
+
+
+    /**
+ * Genere le PDF de la facture de paiement
+ */
+public function pdf(Payment $payment)
+{
+    $payment->load('student');
+
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.payments.pdf', compact('payment'));
+    $pdf->setPaper('A4', 'portrait');
+
+    return $pdf->download('facture_' . $payment->student->registration_number . '_' . $payment->payment_date . '.pdf');
+}
 }

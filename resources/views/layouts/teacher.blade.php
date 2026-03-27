@@ -16,8 +16,8 @@
     <div class="container-scroller">
 
       <!-- NAVBAR -->
-      <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
-        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
+      <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row" style="background:linear-gradient(90deg, #6c5ce7, #00b894);">
+        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start" style="background:linear-gradient(90deg, #6af8ec, #0e1413);">
           <a class="navbar-brand brand-logo" href="{{ route('teacher.dashboard') }}">
             <span style="color:white;font-size:18px;font-weight:700;">EduGest</span>
           </a>
