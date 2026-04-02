@@ -37,6 +37,13 @@
                         </div>
                     </div>
                     <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Confirmer le mot de passe</label>
+                        <div class="col-sm-9">
+                            <input type="password" name="password_confirmation" class="form-control" required>
+                        </div>
+                    </div>
+                                        
+                    <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Telephone</label>
                         <div class="col-sm-9">
                             <input type="text" name="phone" class="form-control" value="{{ old('phone') }}">

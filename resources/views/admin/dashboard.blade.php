@@ -186,9 +186,9 @@ new Chart(ctx, {
     },
     options: {
         responsive: true,
-        scales: {
-            yAxes: [{ ticks: { beginAtZero: true } }]
-        }
+scales: {
+    yAxes: [{ ticks: { beginAtZero: true } }]
+}
     }
 });
 </script>

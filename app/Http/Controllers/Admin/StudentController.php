@@ -28,21 +28,28 @@ class StudentController extends Controller
     /**
      * Enregistre un nouvel élève en base de données
      */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'first_name'          => 'required|string|max:255',
-            'last_name'           => 'required|string|max:255',
-            'date_of_birth'       => 'required|date',
-            'gender'              => 'required|in:M,F',
-            'registration_number' => 'required|unique:students',
-        ]);
+ public function store(Request $request)
+{
+    // Validation des champs
+    $validated = $request->validate([
+        'first_name'     => 'required|string|max:255',
+        'last_name'      => 'required|string|max:255',
+        'date_of_birth'  => 'required|date',
+        'gender'         => 'required|string',
+        'place_of_birth' => 'nullable|string|max:255',
+        'address'        => 'nullable|string|max:255',
+    ]);
 
-        Student::create($request->all());
+    // Génération automatique du numéro d'inscription
+    $validated['registration_number'] = 'ELEVE-' . date('Y') . '-' . strtoupper(substr($validated['last_name'], 0, 3)) . rand(100, 999);
 
-        return redirect()->route('admin.students.index')
-                         ->with('success', 'Élève ajouté avec succès !');
-    }
+    // Création de l'élève
+    Student::create($validated);
+
+    return redirect()->route('admin.students.index')
+                     ->with('success', 'Élève ajouté avec succès.');
+}
+
 
     /**
      * Affiche le profil d'un élève
