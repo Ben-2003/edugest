@@ -95,6 +95,11 @@ Route::get('/api/classes/{class}/students', function(\App\Models\Classes $class)
     ]);
 })->middleware('auth');
 
+// {{-- PDF Bulletin --}}
+Route::get('/report_cards/{reportCard}/pdf', [ReportCardController::class, 'pdf'])->name('report_cards.pdf');
+
+// {{-- PDF Paiement --}}
+Route::get('/payments/{payment}/pdf', [PaymentController::class, 'pdf'])->name('payments.pdf');
 /*
 |--------------------------------------------------------------------------
 | Authentification Laravel UI

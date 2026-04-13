@@ -67,20 +67,19 @@
                         </div>
 
                         {{-- Annee scolaire --}}
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Annee scolaire <span class="text-danger">*</span></label>
-                                <select name="school_year_id" class="form-control {{ $errors->has('school_year_id') ? 'is-invalid' : '' }}" required>
-                                    <option value="">-- Choisir une annee --</option>
-                                    @foreach($schoolYears as $year)
-                                    <option value="{{ $year->id }}" {{ old('school_year_id', $reportCard->school_year_id) == $year->id ? 'selected' : '' }}>
-                                        {{ $year->year_name }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                                @error('school_year_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                            </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Année scolaire <span class="text-danger">*</span></label>
+                            <input list="schoolYears" name="year_label" class="form-control" 
+                                value="{{ old('year_label') }}" placeholder="Ex: 2025-2026" required>
+                            <datalist id="schoolYears">
+                                @foreach($schoolYears as $year)
+                                    <option value="{{ $year->year_name }}">
+                                @endforeach
+                            </datalist>
+                            @error('year_label')<small class="text-danger">{{ $message }}</small>@enderror
                         </div>
+                    </div>
 
                         {{-- Trimestre --}}
                         <div class="col-md-6">

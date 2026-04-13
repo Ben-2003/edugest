@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="{{ asset('dist/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('dist/assets/css/style.css') }}">
     <link rel="shortcut icon" href="{{ asset('dist/assets/images/favicon.png') }}" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
     @yield('styles')
   </head>
   <body>
@@ -214,6 +216,23 @@
     <script src="{{ asset('dist/assets/vendors/js/vendor.bundle.base.js') }}"></script>
     <script src="{{ asset('dist/assets/js/off-canvas.js') }}"></script>
     <script src="{{ asset('dist/assets/js/misc.js') }}"></script>
+    <!-- jQuery (OBLIGATOIRE AVANT select2) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Select2 -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
+<script>
+$(document).ready(function() {
+    $('.select2').select2({
+        placeholder: "-- Choisir un élève --",
+        allowClear: true,
+        width: '100%',
+        minimumInputLength: 1
+    });
+});
+</script>
     @yield('scripts')
   </body>
 </html>

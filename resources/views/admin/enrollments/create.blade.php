@@ -4,6 +4,26 @@
 @section('page-title', 'Inscrire un Eleve')
 @section('breadcrumb', 'Inscriptions > Nouvelle inscription')
 
+<style>
+/* Corrige la hauteur du champ */
+.select2-container .select2-selection--single {
+    height: calc(2.25rem + 2px) !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Corrige le texte à l’intérieur */
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: normal !important;
+    padding-left: 0 !important;
+}
+
+/* Corrige la flèche */
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 100% !important;
+}
+</style>
+
 @section('content')
 <div class="row">
     <div class="col-md-10 grid-margin stretch-card">
@@ -31,8 +51,10 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Eleve <span class="text-danger">*</span></label>
-                                <select name="student_id" class="form-control {{ $errors->has('student_id') ? 'is-invalid' : '' }}" required>
-                                    <option value="">-- Choisir un eleve --</option>
+<select name="student_id" 
+        class="form-control select2 {{ $errors->has('student_id') ? 'is-invalid' : '' }}" 
+        required>
+    <option value="">-- Choisir un eleve --</option>
                                     @foreach($students as $student)
                                     <option value="{{ $student->id }}" {{ old('student_id') == $student->id ? 'selected' : '' }}>
                                         {{ $student->last_name }} {{ $student->first_name }}

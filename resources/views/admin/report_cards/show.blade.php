@@ -6,7 +6,7 @@
 
 @section('styles')
 <style>
-    {{-- Barre de progression de la moyenne --}}
+    //Barre de progression de la moyenne 
     .avg-bar { width:100%; height:10px; background:#e9ecef; border-radius:4px; overflow:hidden; margin-top:8px; }
     .avg-bar-fill { height:100%; border-radius:4px; }
 </style>
@@ -15,12 +15,12 @@
 @section('content')
 <div class="row">
 
-    {{-- Carte profil bulletin --}}
+    //Carte profil bulletin 
     <div class="col-md-4 grid-margin stretch-card">
         <div class="card">
             <div class="card-body text-center">
 
-                {{-- Avatar eleve --}}
+                //Avatar eleve 
                 <div style="width:80px;height:80px;border-radius:50%;background:#6c5ce7;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:32px;margin:0 auto 16px;">
                     {{ strtoupper(substr($reportCard->student->first_name ?? 'E', 0, 1)) }}
                 </div>
@@ -28,11 +28,11 @@
                 <h4>{{ $reportCard->student->first_name ?? '' }} {{ $reportCard->student->last_name ?? '' }}</h4>
                 <p class="text-muted">{{ $reportCard->student->registration_number ?? '' }}</p>
 
-                {{-- Classe et trimestre --}}
+                //Classe et trimestre 
                 <span class="badge badge-info me-1">{{ $reportCard->schoolClass->class_name ?? 'N/A' }}</span>
                 <span class="badge badge-secondary">{{ $reportCard->term }}</span>
 
-                {{-- Moyenne mise en valeur --}}
+                //Moyenne mise en valeur 
                 <div class="mt-3">
                     @php
                         $avg = $reportCard->average ?? 0;
@@ -54,13 +54,17 @@
                         {{ number_format($avg, 2) }}/20
                     </h2>
                     <small style="color:{{ $color }};font-weight:600;">{{ $mention }}</small>
-                    {{-- Barre de progression --}}
+                    //Barre de progression 
                     <div class="avg-bar mt-2">
                         <div class="avg-bar-fill" style="width:{{ ($avg/20)*100 }}%;background:{{ $color }};"></div>
                     </div>
                 </div>
 
                 <div class="mt-4">
+                    //Telecharger le PDF du bulletin 
+                    <a href="{{ route('admin.report_cards.pdf', $reportCard) }}" class="btn btn-success btn-sm me-2" target="_blank">
+                        <i class="mdi mdi-file-pdf"></i> Telecharger PDF
+                    </a>
                     <a href="{{ route('admin.report_cards.edit', $reportCard) }}" class="btn btn-warning btn-sm me-2">
                         <i class="mdi mdi-pencil"></i> Modifier
                     </a>
@@ -73,7 +77,7 @@
         </div>
     </div>
 
-    {{-- Details du bulletin --}}
+    //Details du bulletin 
     <div class="col-md-8 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
@@ -124,7 +128,7 @@
     </div>
 </div>
 
-{{-- Notes du trimestre --}}
+//Notes du trimestre 
 @if($grades->count() > 0)
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
@@ -172,7 +176,7 @@
 </div>
 @endif
 
-{{-- Bouton supprimer --}}
+//Bouton supprimer 
 <div class="row">
     <div class="col-md-12">
         <form action="{{ route('admin.report_cards.destroy', $reportCard) }}" method="POST"

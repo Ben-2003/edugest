@@ -58,10 +58,28 @@
                                     <option value="{{ $teacher->id }}" {{ $class->teacher_id == $teacher->id ? 'selected' : '' }}>
                                         {{ $teacher->user->first_name ?? '' }} {{ $teacher->user->last_name ?? '' }}
                                     </option>
+
+                                    
                                     @endforeach
                                 </select>
                             </div>
+
+                            
                         </div>
+
+                                            <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Année scolaire <span class="text-danger">*</span></label>
+                            <input list="schoolYears" name="year_label" class="form-control" 
+                                value="{{ old('year_label') }}" placeholder="Ex: 2025-2026" required>
+                            <datalist id="schoolYears">
+                                @foreach($schoolYears as $year)
+                                    <option value="{{ $year->year_name }}">
+                                @endforeach
+                            </datalist>
+                            @error('year_label')<small class="text-danger">{{ $message }}</small>@enderror
+                        </div>
+                    </div>
                     </div>
                     <div class="text-right mt-4">
                         <a href="{{ route('admin.classes.index') }}" class="btn btn-secondary me-2">

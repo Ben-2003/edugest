@@ -43,7 +43,11 @@
                     <small class="text-muted">Montant du paiement</small>
                 </div>
 
-                <div class="mt-4">
+               <div class="mt-4">
+                    {{-- Telecharger le PDF de la facture --}}
+                    <a href="{{ route('admin.payments.pdf', $payment) }}" class="btn btn-success btn-sm me-2" target="_blank">
+                        <i class="mdi mdi-file-pdf"></i> Telecharger Recu PDF
+                    </a>
                     <a href="{{ route('admin.payments.edit', $payment) }}" class="btn btn-warning btn-sm me-2">
                         <i class="mdi mdi-pencil"></i> Modifier
                     </a>

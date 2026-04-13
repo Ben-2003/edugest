@@ -8,6 +8,8 @@ use App\Models\ReportCard;
 use App\Models\Student;
 use App\Models\Classes;
 use App\Models\SchoolYear;
+use App\Models\Subject;
+use App\Models\Grade;
 
 class ReportCardController extends Controller
 {
@@ -24,21 +26,25 @@ class ReportCardController extends Controller
     }
 
     /**
-     * Affiche le formulaire de création d'un bulletin
+     * Formulaire de creation bulletin
+     * L'utilisateur choisit classe, eleve, trimestre
+     * Le systeme charge automatiquement toutes les matieres
      */
     public function create()
     {
         $students    = Student::orderBy('last_name')->get();
-        $classes     = Classes::orderBy('class_name')->get();
-        $schoolYears = SchoolYear::orderBy('year_label')->get();
+        $classes     = Classes::with(['enrollments.student'])->orderBy('class_name')->get();
+        $schoolYears = SchoolYear::orderBy('id', 'desc')->get();
+        $subjects    = Subject::orderBy('subject_name')->get();
 
         return view('admin.report_cards.create', compact(
-            'students', 'classes', 'schoolYears'
+            'students', 'classes', 'schoolYears', 'subjects'
         ));
     }
 
     /**
-     * Enregistre un nouveau bulletin
+     * Enregistre toutes les notes du bulletin en une fois
+     * et calcule automatiquement la moyenne
      */
     public function store(Request $request)
     {
@@ -46,38 +52,82 @@ class ReportCardController extends Controller
             'student_id'     => 'required|exists:students,id',
             'class_id'       => 'required|exists:classes,id',
             'school_year_id' => 'required|exists:school_years,id',
-            'term'           => 'required|string|max:50',
-            'average'        => 'required|numeric|min:0|max:20',
-            'remarks'        => 'nullable|string',
+            'term'           => 'required|string',
+            'scores'         => 'required|array',
+            'scores.*'       => 'nullable|numeric|min:0|max:20',
         ]);
 
-        // Vérifier qu'un bulletin n'existe pas déjà pour cet élève ce trimestre
+        // Verifier qu'un bulletin n'existe pas deja
         $exists = ReportCard::where('student_id', $request->student_id)
                             ->where('school_year_id', $request->school_year_id)
                             ->where('term', $request->term)
                             ->exists();
-
         if ($exists) {
             return back()->withErrors([
-                'student_id' => 'Un bulletin existe déjà pour cet élève ce trimestre !'
+                'student_id' => 'Un bulletin existe deja pour cet eleve ce trimestre !'
             ])->withInput();
         }
 
-        ReportCard::create($request->all());
+        // Enregistrer chaque note et calculer la moyenne
+        $totalPoints = 0;
+        $totalCoeff  = 0;
+
+        foreach ($request->scores as $subjectId => $score) {
+            if ($score === null || $score === '') continue;
+
+            $subject = Subject::find($subjectId);
+            $coeff   = $subject->coefficient ?? 1;
+
+            // Supprimer l'ancienne note si existe
+            Grade::where('student_id', $request->student_id)
+                 ->where('subject_id', $subjectId)
+                 ->where('class_id', $request->class_id)
+                 ->where('school_year_id', $request->school_year_id)
+                 ->where('term', $request->term)
+                 ->delete();
+
+            // Creer la nouvelle note
+            Grade::create([
+                'student_id'     => $request->student_id,
+                'subject_id'     => $subjectId,
+                'class_id'       => $request->class_id,
+                'school_year_id' => $request->school_year_id,
+                'score'          => $score,
+                'term'           => $request->term,
+                'grade_type'     => 'Composition',
+            ]);
+
+            $totalPoints += $score * $coeff;
+            $totalCoeff  += $coeff;
+        }
+
+        // Calcul automatique de la moyenne
+        $average = $totalCoeff > 0 ? round($totalPoints / $totalCoeff, 2) : 0;
+
+        // Creer le bulletin avec la moyenne calculee
+        ReportCard::create([
+            'student_id'     => $request->student_id,
+            'class_id'       => $request->class_id,
+            'school_year_id' => $request->school_year_id,
+            'term'           => $request->term,
+            'average'        => $average,
+            'rank'           => $request->rank ?? null,
+            'appreciation'   => $request->appreciation ?? null,
+            'remarks'        => $request->remarks ?? null,
+        ]);
 
         return redirect()->route('admin.report_cards.index')
-                         ->with('success', 'Bulletin créé avec succès !');
+                         ->with('success', 'Bulletin cree avec succes ! Moyenne : ' . $average . '/20');
     }
 
     /**
-     * Affiche le détail d'un bulletin
+     * Affiche le detail d'un bulletin
      */
     public function show(ReportCard $reportCard)
     {
         $reportCard->load(['student', 'schoolClass', 'schoolYear']);
 
-        // Récupère les notes de l'élève pour ce trimestre
-        $grades = \App\Models\Grade::with('subject')
+        $grades = Grade::with('subject')
                     ->where('student_id', $reportCard->student_id)
                     ->where('class_id', $reportCard->class_id)
                     ->where('school_year_id', $reportCard->school_year_id)
@@ -94,15 +144,16 @@ class ReportCardController extends Controller
     {
         $students    = Student::orderBy('last_name')->get();
         $classes     = Classes::orderBy('class_name')->get();
-        $schoolYears = SchoolYear::orderBy('year_label')->get();
+        $schoolYears = SchoolYear::orderBy('id', 'desc')->get();
+        $subjects    = Subject::orderBy('subject_name')->get();
 
         return view('admin.report_cards.edit', compact(
-            'reportCard', 'students', 'classes', 'schoolYears'
+            'reportCard', 'students', 'classes', 'schoolYears', 'subjects'
         ));
     }
 
     /**
-     * Met à jour un bulletin existant
+     * Met a jour un bulletin existant avec recalcul de la moyenne
      */
     public function update(Request $request, ReportCard $reportCard)
     {
@@ -110,15 +161,58 @@ class ReportCardController extends Controller
             'student_id'     => 'required|exists:students,id',
             'class_id'       => 'required|exists:classes,id',
             'school_year_id' => 'required|exists:school_years,id',
-            'term'           => 'required|string|max:50',
-            'average'        => 'required|numeric|min:0|max:20',
-            'remarks'        => 'nullable|string',
+            'term'           => 'required|string',
+            'scores'         => 'required|array',
+            'scores.*'       => 'nullable|numeric|min:0|max:20',
         ]);
 
-        $reportCard->update($request->all());
+        // Recalcul des notes
+        $totalPoints = 0;
+        $totalCoeff  = 0;
+
+        foreach ($request->scores as $subjectId => $score) {
+            if ($score === null || $score === '') continue;
+
+            $subject = Subject::find($subjectId);
+            $coeff   = $subject->coefficient ?? 1;
+
+            Grade::where('student_id', $request->student_id)
+                 ->where('subject_id', $subjectId)
+                 ->where('class_id', $request->class_id)
+                 ->where('school_year_id', $request->school_year_id)
+                 ->where('term', $request->term)
+                 ->delete();
+
+            Grade::create([
+                'student_id'     => $request->student_id,
+                'subject_id'     => $subjectId,
+                'class_id'       => $request->class_id,
+                'school_year_id' => $request->school_year_id,
+                'score'          => $score,
+                'term'           => $request->term,
+                'grade_type'     => 'Composition',
+            ]);
+
+            $totalPoints += $score * $coeff;
+            $totalCoeff  += $coeff;
+        }
+
+        // Recalcul automatique de la moyenne
+        $average = $totalCoeff > 0 ? round($totalPoints / $totalCoeff, 2) : 0;
+
+        $reportCard->update([
+            'student_id'     => $request->student_id,
+            'class_id'       => $request->class_id,
+            'school_year_id' => $request->school_year_id,
+            'term'           => $request->term,
+            'average'        => $average,
+            'rank'           => $request->rank ?? $reportCard->rank,
+            'appreciation'   => $request->appreciation ?? $reportCard->appreciation,
+            'remarks'        => $request->remarks ?? $reportCard->remarks,
+        ]);
 
         return redirect()->route('admin.report_cards.index')
-                         ->with('success', 'Bulletin modifié avec succès !');
+                         ->with('success', 'Bulletin mis a jour ! Nouvelle moyenne : ' . $average . '/20');
     }
 
     /**
@@ -129,29 +223,26 @@ class ReportCardController extends Controller
         $reportCard->delete();
 
         return redirect()->route('admin.report_cards.index')
-                         ->with('success', 'Bulletin supprimé avec succès !');
+                         ->with('success', 'Bulletin supprime avec succes !');
     }
 
-
     /**
- * Genere le PDF du bulletin
- */
-public function pdf(ReportCard $reportCard)
-{
-    $reportCard->load(['student', 'schoolClass', 'schoolYear']);
+     * Genere le PDF du bulletin
+     */
+    public function pdf(ReportCard $reportCard)
+    {
+        $reportCard->load(['student', 'schoolClass', 'schoolYear']);
 
-    // Notes de l'eleve pour ce trimestre
-    $grades = \App\Models\Grade::with('subject')
-                ->where('student_id', $reportCard->student_id)
-                ->where('class_id', $reportCard->class_id)
-                ->where('school_year_id', $reportCard->school_year_id)
-                ->where('term', $reportCard->term)
-                ->get();
+        $grades = Grade::with('subject')
+                    ->where('student_id', $reportCard->student_id)
+                    ->where('class_id', $reportCard->class_id)
+                    ->where('school_year_id', $reportCard->school_year_id)
+                    ->where('term', $reportCard->term)
+                    ->get();
 
-    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.report_cards.pdf', compact('reportCard', 'grades'));
-    $pdf->setPaper('A4', 'portrait');
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.report_cards.pdf', compact('reportCard', 'grades'));
+        $pdf->setPaper('A4', 'portrait');
 
-    return $pdf->download('bulletin_' . $reportCard->student->registration_number . '_' . $reportCard->term . '.pdf');
+        return $pdf->download('bulletin_' . $reportCard->student->registration_number . '_' . $reportCard->term . '.pdf');
+    }
 }
-}
-

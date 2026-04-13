@@ -36,6 +36,13 @@
                             <input type="password" name="password" class="form-control" placeholder="Laisser vide pour ne pas changer">
                         </div>
                     </div>
+
+                     <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Date d'embauche</label>
+                        <div class="col-sm-9">
+                            <input type="date" name="hire_date" class="form-control" value="{{ old('hire_date') }}" required>
+                        </div>
+                    </div>
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Telephone</label>
                         <div class="col-sm-9">
