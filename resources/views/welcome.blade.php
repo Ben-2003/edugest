@@ -26,6 +26,56 @@
       --color-secondary: #f5a623;
       --color-bg: #f8f9fa;
     }
+    
+    /* ── SECTION CONTACT & CTA ── */
+    .contact { padding: 80px 0; background: #fff; }
+    .contact .info-container { margin-bottom: 50px; }
+    
+    .contact .info-item {
+        background: #f8f9fa;
+        padding: 30px;
+        border-radius: 12px;
+        height: 100%;
+        transition: 0.3s;
+        border-bottom: 3px solid transparent;
+        text-align: center;
+    }
+    .contact .info-item:hover {
+        border-bottom: 3px solid var(--color-primary);
+        transform: translateY(-5px);
+    }
+    .contact .info-item i {
+        font-size: 32px;
+        color: var(--color-primary);
+        margin-bottom: 15px;
+        display: inline-block;
+    }
+    .contact .info-item h3 { font-size: 18px; font-weight: 700; color: #1a1a2e; margin-bottom: 10px; }
+    .contact .info-item p { font-size: 14px; color: #666; margin: 0; }
+    
+    .contact .php-email-form {
+        background: #fff;
+        padding: 30px;
+        box-shadow: 0 0 30px rgba(0,0,0,0.08);
+        border-radius: 12px;
+        height: 100%;
+    }
+    .contact .form-control {
+        padding: 12px 15px;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+    }
+    .contact .form-control:focus {
+        border-color: var(--color-primary);
+        box-shadow: none;
+    }
+    .map-box {
+        border-radius: 12px;
+        overflow: hidden;
+        height: 100%;
+        min-height: 300px;
+        box-shadow: 0 0 30px rgba(0,0,0,0.08);
+    }
 
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'Open Sans', sans-serif; color:var(--color-default); }
@@ -42,7 +92,7 @@
 
     /* ── HERO ── */
     .hero { background:linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); min-height:100vh; display:flex; align-items:center; position:relative; overflow:hidden; }
-    .hero::before { content:''; position:absolute; inset:0; background:url('https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=1920&q=80') center/cover; opacity:0.15; }
+    .hero::before { content:''; position:absolute; inset:0; background:url('https://tse4.mm.bing.net/th/id/OIP.tFT6qvgz2cfsnHzxi7a5UgHaE7?rs=1&pid=ImgDetMain&o=7&rm=3') center/cover; opacity:0.15; }
     .hero .container { position:relative; z-index:1; }
     .hero h2 { font-size:52px; font-weight:700; color:white; line-height:1.2; font-family:'Poppins',sans-serif; }
     .hero h2 span { color:var(--color-secondary); }
@@ -130,7 +180,7 @@
     <div class="container d-flex align-items-center justify-content-between">
       <a href="/" class="logo d-flex align-items-center gap-2 text-decoration-none">
         <i class="bi bi-mortarboard-fill" style="font-size:28px; color:#e82d2d;"></i>
-        <h1>Edu<span>Gest</span></h1>
+        <h1>EduGest <span style="font-size:14px;">CAF RAD</span></h1>
       </a>
 
       <nav class="navmenu">
@@ -155,11 +205,11 @@
       <div class="row align-items-center" style="min-height:90vh;">
         <div class="col-lg-7">
           <h2 data-aos="fade-up" data-aos-delay="100">
-            Gérez votre école<br><span>simplement et efficacement</span>
+            BIENVENUE AU<br><span>GROUPE SCOLAIRE BILINGUE DU CAFRAD</span>
           </h2>
           <p data-aos="fade-up" data-aos-delay="200">
-            EduGest est une plateforme complète de gestion scolaire pour les écoles primaires. 
-            Élèves, enseignants, notes, absences et paiements — tout en un seul endroit.
+            Plateforme officielle du Groupe Scolaire Bilingue du CAFRAD.
+            Gérez efficacement les élèves, enseignants, notes, absences et paiements dans un système moderne et centralisé.
           </p>
           <div class="d-flex gap-3 flex-wrap" data-aos="fade-up" data-aos-delay="300">
             <a href="{{ route('login') }}" class="btn-hero-primary">
@@ -172,12 +222,12 @@
 
           <div class="hero-stats" data-aos="fade-up" data-aos-delay="400">
             <div class="hero-stat">
-              <div class="number">3</div>
-              <div class="label">Espaces dédiés</div>
+              <div class="number">+500</div>
+              <div class="label">Élèves</div>
             </div>
             <div class="hero-stat">
-              <div class="number">11</div>
-              <div class="label">Modules de gestion</div>
+              <div class="number">+20</div>
+              <div class="label">Enseignants</div>
             </div>
             <div class="hero-stat">
               <div class="number">100%</div>
@@ -226,32 +276,38 @@
     <div class="container">
       <div class="row gy-4 align-items-center">
         <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
-          <img src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800&q=80"
+          <img src="https://tse1.mm.bing.net/th/id/OIP.ubDgqFGwzg1TMUBbgxbTQAHaFk?rs=1&pid=ImgDetMain&o=7&rm=3/wp-content/uploads/..."
                class="img-fluid" alt="École primaire" style="border-radius:16px;">
         </div>
         <div class="col-lg-6 content" data-aos="fade-up" data-aos-delay="200">
-          <h3>Une gestion scolaire moderne et centralisée</h3>
-          <p class="fst-italic" style="color:#888; margin-bottom:20px;">
-            EduGest simplifie le quotidien des administrations, enseignants et parents d'élèves.
-          </p>
-          <ul>
-            <li>
-              <i class="bi bi-check-circle-fill"></i>
-              <span>Suivi en temps réel des notes et des absences de chaque élève.</span>
-            </li>
-            <li>
-              <i class="bi bi-check-circle-fill"></i>
-              <span>Gestion complète des paiements et bulletins scolaires.</span>
-            </li>
-            <li>
-              <i class="bi bi-check-circle-fill"></i>
-              <span>Accès sécurisé pour chaque rôle — admin, enseignant et parent.</span>
-            </li>
-            <li>
-              <i class="bi bi-check-circle-fill"></i>
-              <span>Interface moderne, rapide et facile à prendre en main.</span>
-            </li>
-          </ul>
+          <h3>Une gestion scolaire moderne, efficace et connectée</h3>
+
+      <p class="fst-italic" style="color:#888; margin-bottom:20px;">
+      Le Groupe Scolaire Bilingue du CAFRAD s’inscrit dans une dynamique d’innovation en mettant à votre disposition une plateforme numérique performante dédiée à la gestion scolaire.
+      </p>
+
+      <p>
+      Cette solution permet de centraliser et simplifier l’ensemble des activités académiques et administratives, tout en renforçant la communication entre l’administration, les enseignants et les parents d’élèves.
+      </p>
+
+      <ul>
+        <li>
+          <i class="bi bi-check-circle-fill"></i>
+          <span>Suivi en temps réel des performances académiques et des absences des élèves.</span>
+        </li>
+        <li>
+          <i class="bi bi-check-circle-fill"></i>
+          <span>Gestion simplifiée des paiements et génération automatisée des bulletins scolaires.</span>
+        </li>
+        <li>
+          <i class="bi bi-check-circle-fill"></i>
+          <span>Accès sécurisé et personnalisé pour chaque profil : administration, enseignants et parents.</span>
+        </li>
+        <li>
+          <i class="bi bi-check-circle-fill"></i>
+          <span>Interface intuitive, rapide et adaptée aux besoins du milieu scolaire moderne.</span>
+        </li>
+      </ul>
           <a href="{{ route('login') }}" class="btn-hero-primary d-inline-flex mt-3">
             <i class="bi bi-box-arrow-in-right"></i> Commencer maintenant
           </a>
@@ -379,13 +435,81 @@
   </section>
 
   <!-- ══ CTA ══ -->
-  <section class="cta" id="contact">
+<section id="contact" class="contact">
     <div class="container" data-aos="fade-up">
-      <h2>Prêt à moderniser votre école ?</h2>
-      <p>Connectez-vous dès maintenant et découvrez toutes les fonctionnalités d'EduGest.</p>
-      <a href="{{ route('login') }}" class="btn-hero-primary" style="font-size:18px; padding:16px 40px;">
-        <i class="bi bi-box-arrow-in-right"></i> Se connecter à EduGest
-      </a>
+
+      <div class="cta text-center mb-5" style="background: linear-gradient(135deg,#1a1a2e,#0f3460); padding: 60px 40px; border-radius: 20px;">
+        <h2 style="color: white; font-weight: 700; margin-bottom: 15px;">Bienvenue au Groupe Scolaire Bilingue du CAFRAD</h2>
+        <p style="color: rgba(255,255,255,0.8); font-size: 18px; margin-bottom: 30px;">Connectez-vous dès maintenant et découvrez toutes les fonctionnalités d'EduGest.</p>
+        <a href="{{ route('login') }}" class="btn-hero-primary" style="font-size:18px; padding:16px 40px;">
+          <i class="bi bi-box-arrow-in-right"></i> Se connecter à EduGest
+        </a>
+      </div>
+
+      <div class="section-title text-center mb-5">
+        <h2 style="font-size: 32px; font-weight: 700; color: #1a1a2e;">Contactez-nous</h2>
+        <p>Une question ? L'administration du CAFRAD est à votre disposition.</p>
+      </div>
+
+      <div class="row gy-4 info-container">
+        <div class="col-lg-4">
+          <div class="info-item">
+            <i class="bi bi-geo-alt"></i>
+            <h3>Adresse</h3>
+            <p>Bépanda Casmando,  Douala<br>Cameroun, B.P 4355,</p>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="info-item">
+            <i class="bi bi-telephone"></i>
+            <h3>Téléphone</h3>
+            <p>+237 677 00 00 00<br>+237 233 00 00 00</p>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="info-item">
+            <i class="bi bi-envelope"></i>
+            <h3>Email</h3>
+            <p>contact@cafrad-ecole.cm<br>support@edugest.cm</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row gy-4 mt-2">
+        <div class="col-lg-6">
+          <div class="map-box">
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3979.760543822585!2d9.726673874078593!3d4.0691465959045985!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x10610d8c80b4c865%3A0x2c7c10b1465e5ef2!2sCAFRAD%20Cameroun!5e0!3m2!1sfr!2scm!4v1776349706182!5m2!1sfr!2scm" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"> 
+              width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
+            </iframe>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <form action="#" method="post" class="php-email-form">
+            <div class="row gy-3">
+              <div class="col-md-6">
+                <input type="text" name="name" class="form-control" placeholder="Votre Nom complet" required>
+              </div>
+              <div class="col-md-6">
+                <input type="email" class="form-control" name="email" placeholder="Votre Email" required>
+              </div>
+              <div class="col-md-12">
+                <input type="text" class="form-control" name="subject" placeholder="Sujet du message" required>
+              </div>
+              <div class="col-md-12">
+                <textarea class="form-control" name="message" rows="5" placeholder="Votre message..." required></textarea>
+              </div>
+              <div class="col-md-12 text-center">
+                <button type="submit" class="btn-hero-primary border-0 w-100 justify-content-center">
+                  Envoyer le message
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
     </div>
   </section>
 

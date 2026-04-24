@@ -53,16 +53,14 @@
                         <label class="col-sm-3 col-form-label">Enfants</label>
                         <div class="col-sm-9">
                             <input type="text" name="student_name" list="students" class="form-control" placeholder="Rechercher un étudiant...">
-
-                            <select name="students" id="student" class=" select2 form-control">
-                                <datalist id="students">
+                            <datalist id="students">
                                 @foreach($students as $student)
                                     <option value="{{ $student->first_name }} {{ $student->last_name }} ({{ $student->registration_number }})">
                                 @endforeach
                             </datalist>
-                            </select>
                         </div>
-                    </div>c
+                    </div>
+
                     <div class="text-right mt-4">
                         <a href="{{ route('admin.parents.index') }}" class="btn btn-secondary me-2">Annuler</a>
                         <button type="submit" class="btn btn-primary">

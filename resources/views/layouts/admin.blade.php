@@ -13,6 +13,101 @@
     <link rel="shortcut icon" href="{{ asset('dist/assets/images/favicon.png') }}" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
+    <style>
+      /* Dark mode */
+      body.dark-theme {
+          background-color: #1a1a2e !important;
+          color: #e0e0e0 !important;
+      }
+      body.dark-theme .navbar.default-layout-navbar {
+          background: #16213e !important;
+      }
+      body.dark-theme .sidebar {
+          background: #0f3460 !important;
+      }
+      body.dark-theme .main-panel {
+          background: #1a1a2e !important;
+      }
+      body.dark-theme .card {
+          background: #16213e !important;
+          border-color: #0f3460 !important;
+          color: #e0e0e0 !important;
+      }
+      body.dark-theme .card-title {
+          color: #e0e0e0 !important;
+      }
+      body.dark-theme .table {
+          color: #e0e0e0 !important;
+      }
+      body.dark-theme .table thead.thead-dark th {
+          background: #0f3460 !important;
+      }
+      body.dark-theme .table td,
+      body.dark-theme .table th {
+          border-color: #0f3460 !important;
+      }
+      body.dark-theme .table-hover tbody tr:hover {
+          background: #0f3460 !important;
+      }
+      body.dark-theme .form-control {
+          background: #16213e !important;
+          border-color: #0f3460 !important;
+          color: #e0e0e0 !important;
+      }
+      body.dark-theme .breadcrumb {
+          background: transparent !important;
+      }
+
+/* Scroll independant sidebar et contenu */
+body, html {
+    height: 100%;
+    overflow: hidden;
+}
+.container-scroller {
+    height: 100vh;
+    overflow: hidden;
+}
+.container-fluid.page-body-wrapper {
+    height: calc(100vh - 63px);
+    overflow: hidden;
+    display: flex;
+}
+.sidebar.sidebar-offcanvas {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative !important;
+}
+.main-panel {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex: 1;
+}
+/* Scrollbar style sidebar */
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
+/* Scrollbar style contenu */
+.main-panel::-webkit-scrollbar { width: 6px; }
+.main-panel::-webkit-scrollbar-track { background: #f1f1f1; }
+.main-panel::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+
+      body.dark-theme .page-title h3 {
+          color: #e0e0e0 !important;
+      }
+      body.dark-theme .footer {
+          background: #16213e !important;
+          border-color: #0f3460 !important;
+          color: #aaa !important;
+      }
+      body.dark-theme .nav-profile-text p {
+          color: #e0e0e0 !important;
+      }
+      body.dark-theme .text-muted {
+          color: #aaa !important;
+      }
+    </style>
     @yield('styles')
   </head>
   <body>
@@ -33,6 +128,12 @@
             <span class="mdi mdi-menu"></span>
           </button>
           <ul class="navbar-nav navbar-nav-right">
+            {{-- Bouton toggle dark/light mode --}}
+            <li class="nav-item d-none d-lg-block">
+                <a class="nav-link" href="#" id="themeToggle" title="Changer le theme">
+                    <i class="mdi mdi-weather-night" id="themeIcon"></i>
+                </a>
+            </li>
             <li class="nav-item nav-profile dropdown">
               <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
                 <div class="nav-profile-img">
@@ -234,5 +335,32 @@ $(document).ready(function() {
 });
 </script>
     @yield('scripts')
+    <script>
+// Theme dark/light
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon   = document.getElementById('themeIcon');
+const body        = document.body;
+
+// Charger le theme sauvegarde
+const savedTheme = localStorage.getItem('theme') || 'light';
+if (savedTheme === 'dark') {
+    body.classList.add('dark-theme');
+    themeIcon.classList.replace('mdi-weather-night', 'mdi-weather-sunny');
+}
+
+// Toggle au clic
+themeToggle.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (body.classList.contains('dark-theme')) {
+        body.classList.remove('dark-theme');
+        themeIcon.classList.replace('mdi-weather-sunny', 'mdi-weather-night');
+        localStorage.setItem('theme', 'light');
+    } else {
+        body.classList.add('dark-theme');
+        themeIcon.classList.replace('mdi-weather-night', 'mdi-weather-sunny');
+        localStorage.setItem('theme', 'dark');
+    }
+});
+</script>
   </body>
 </html>

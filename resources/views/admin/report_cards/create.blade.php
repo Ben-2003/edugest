@@ -14,27 +14,27 @@
     /* {{-- Input note --}} */
     .score-input { width:80px; text-align:center; font-weight:700; font-size:14px; }
     .score-input:focus { border-color:#6c5ce7; box-shadow:0 0 0 2px rgba(108,92,231,0.2); }
-/* 
-    {{-- Badge coefficient --}} */
-    .coeff-badge { display:inline-block; background:#e9ecef; border-radius:4px; padding:2px 8px; font-size:12px; font-weight:600; }
+    /* 
+        {{-- Badge coefficient --}} */
+        .coeff-badge { display:inline-block; background:#e9ecef; border-radius:4px; padding:2px 8px; font-size:12px; font-weight:600; }
 
-    /* {{-- Preview moyenne --}} */
-    .moyenne-preview { font-size:28px; font-weight:700; color:#6c5ce7; }
-    .moyenne-mention { font-size:13px; font-weight:600; margin-top:4px; }
-    <style>
-/* Forcer même taille que les select */
-.same-size {
-    height: calc(2.25rem + 2px); /* même que Bootstrap select */
-    padding: 0.375rem 0.75rem;
-    font-size: 0.875rem;
-}
+        /* {{-- Preview moyenne --}} */
+        .moyenne-preview { font-size:28px; font-weight:700; color:#6c5ce7; }
+        .moyenne-mention { font-size:13px; font-weight:600; margin-top:4px; }
+        <style>
+    /* Forcer même taille que les select */
+    .same-size {
+        height: calc(2.25rem + 2px); /* même que Bootstrap select */
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+    }
 
-/* Optionnel si ton thème modifie les select */
-select.form-control {
-    height: calc(2.25rem + 2px);
-}
+    /* Optionnel si ton thème modifie les select */
+    select.form-control {
+        height: calc(2.25rem + 2px);
+    }
 </style>
-</style>
+
 @endsection
 
 @section('content')
@@ -83,29 +83,28 @@ select.form-control {
                     </div>
 
                     {{-- Annee scolaire --}}
-<div class="col-md-3">
-    <div class="form-group">
-        <label>Année scolaire <span class="text-danger">*</span></label>
+                    {{-- Annee scolaire --}}
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Annee scolaire <span class="text-danger">*</span></label>
+                            <select name="school_year_id" id="school_year_id" class="form-control {{ $errors->has('school_year_id') ? 'is-invalid' : '' }}" required onchange="toggleNewYear(this)">
+                                <option value="">-- Choisir --</option>
+                                @foreach($schoolYears as $year)
+                                <option value="{{ $year->id }}" {{ old('school_year_id') == $year->id ? 'selected' : '' }}>
+                                    {{ $year->year_name }}
+                                </option>
+                                @endforeach
+                                <option value="new">+ Nouvelle annee...</option>
+                            </select>
+                            @error('school_year_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
 
-        <input type="text"
-               name="school_year"
-               list="schoolYearsList"
-               class="form-control same-size {{ $errors->has('school_year') ? 'is-invalid' : '' }}"
-               placeholder="Ex: 2025-2026"
-               value="{{ old('school_year') }}"
-               required>
-
-        <datalist id="schoolYearsList">
-            @foreach($schoolYears as $year)
-                <option value="{{ $year->year_name }}">
-            @endforeach
-        </datalist>
-
-        @error('school_year')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>      
+                            {{-- Champ qui apparait si "Nouvelle annee" est selectionne --}}
+                            <input type="text" name="new_year_name" id="new_year_name"
+                                class="form-control mt-2" style="display:none;"
+                                placeholder="Ex: 2025-2026"
+                                value="{{ old('new_year_name') }}">
+                        </div>
+                    </div>     
 
                     {{-- Trimestre --}}
                     <div class="col-md-3">

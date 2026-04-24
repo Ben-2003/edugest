@@ -7,78 +7,99 @@
 @section('content')
 
 {{-- Statistiques ligne 1 --}}
+{{-- Statistiques ligne 1 --}}
 <div class="row">
     <div class="col-md-4 stretch-card grid-margin">
-        <div class="card bg-gradient-danger card-img-holder text-white">
-            <div class="card-body">
-                <img src="{{ asset('dist/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle">
-                <h4 class="font-weight-normal mb-3">Eleves <i class="mdi mdi-account-multiple mdi-24px float-end"></i></h4>
-                <h2 class="mb-5">{{ $totalStudents }}</h2>
-                <h6 class="card-text">Eleves inscrits</h6>
+        <div class="card text-white" style="background:linear-gradient(135deg,#f093fb,#f5576c);min-height:unset;">
+            <div class="card-body py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1" style="color:rgba(255,255,255,0.85);">Eleves inscrits</h6>
+                        <h3 class="mb-0 font-weight-bold">{{ $totalStudents }}</h3>
+                    </div>
+                    <i class="mdi mdi-account-multiple mdi-36px" style="opacity:0.4;"></i>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-4 stretch-card grid-margin">
-        <div class="card bg-gradient-info card-img-holder text-white">
-            <div class="card-body">
-                <img src="{{ asset('dist/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle">
-                <h4 class="font-weight-normal mb-3">Enseignants <i class="mdi mdi-account-tie mdi-24px float-end"></i></h4>
-                <h2 class="mb-5">{{ $totalTeachers }}</h2>
-                <h6 class="card-text">Enseignants actifs</h6>
+        <div class="card text-white" style="background:linear-gradient(135deg,#4facfe,#00f2fe);min-height:unset;">
+            <div class="card-body py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1" style="color:rgba(255,255,255,0.85);">Enseignants</h6>
+                        <h3 class="mb-0 font-weight-bold">{{ $totalTeachers }}</h3>
+                    </div>
+                    <i class="mdi mdi-account-tie mdi-36px" style="opacity:0.4;"></i>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-4 stretch-card grid-margin">
-        <div class="card bg-gradient-success card-img-holder text-white">
-            <div class="card-body">
-                <img src="{{ asset('dist/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle">
-                <h4 class="font-weight-normal mb-3">Classes <i class="mdi mdi-domain mdi-24px float-end"></i></h4>
-                <h2 class="mb-5">{{ $totalClasses }}</h2>
-                <h6 class="card-text">Classes actives</h6>
+        <div class="card text-white" style="background:linear-gradient(135deg,#43e97b,#38f9d7);min-height:unset;">
+            <div class="card-body py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1" style="color:rgba(255,255,255,0.85);">Classes actives</h6>
+                        <h3 class="mb-0 font-weight-bold">{{ $totalClasses }}</h3>
+                    </div>
+                    <i class="mdi mdi-domain mdi-36px" style="opacity:0.4;"></i>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-{{-- Statistiques ligne 2 --}}
 <div class="row">
     <div class="col-md-3 stretch-card grid-margin">
-        <div class="card bg-gradient-warning card-img-holder text-white">
-            <div class="card-body">
-                <img src="{{ asset('dist/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle">
-                <h4 class="font-weight-normal mb-3">Matieres <i class="mdi mdi-book-open-variant mdi-24px float-end"></i></h4>
-                <h2 class="mb-5">{{ $totalSubjects }}</h2>
-                <h6 class="card-text">Matieres enseignees</h6>
+        <div class="card text-white" style="background:linear-gradient(135deg,#fa8231,#f7b731);min-height:unset;">
+            <div class="card-body py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1" style="color:rgba(255,255,255,0.85);">Matieres</h6>
+                        <h3 class="mb-0 font-weight-bold">{{ $totalSubjects }}</h3>
+                    </div>
+                    <i class="mdi mdi-book-open-variant mdi-36px" style="opacity:0.4;"></i>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-3 stretch-card grid-margin">
-        <div class="card bg-gradient-danger card-img-holder text-white">
-            <div class="card-body">
-                <img src="{{ asset('dist/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle">
-                <h4 class="font-weight-normal mb-3">Inscriptions <i class="mdi mdi-card-account-details mdi-24px float-end"></i></h4>
-                <h2 class="mb-5">{{ $totalEnrollments }}</h2>
-                <h6 class="card-text">Eleves inscrits</h6>
+        <div class="card text-white" style="background:linear-gradient(135deg,#fd79a8,#e84393);min-height:unset;">
+            <div class="card-body py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1" style="color:rgba(255,255,255,0.85);">Inscriptions</h6>
+                        <h3 class="mb-0 font-weight-bold">{{ $totalEnrollments }}</h3>
+                    </div>
+                    <i class="mdi mdi-card-account-details mdi-36px" style="opacity:0.4;"></i>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-3 stretch-card grid-margin">
-        <div class="card bg-gradient-info card-img-holder text-white">
-            <div class="card-body">
-                <img src="{{ asset('dist/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle">
-                <h4 class="font-weight-normal mb-3">Parents <i class="mdi mdi-account-heart mdi-24px float-end"></i></h4>
-                <h2 class="mb-5">{{ $totalParents }}</h2>
-                <h6 class="card-text">Parents enregistres</h6>
+        <div class="card text-white" style="background:linear-gradient(135deg,#a29bfe,#6c5ce7);min-height:unset;">
+            <div class="card-body py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1" style="color:rgba(255,255,255,0.85);">Parents</h6>
+                        <h3 class="mb-0 font-weight-bold">{{ $totalParents }}</h3>
+                    </div>
+                    <i class="mdi mdi-account-heart mdi-36px" style="opacity:0.4;"></i>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-3 stretch-card grid-margin">
-        <div class="card bg-gradient-success card-img-holder text-white">
-            <div class="card-body">
-                <img src="{{ asset('dist/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle">
-                <h4 class="font-weight-normal mb-3">Paiements <i class="mdi mdi-cash mdi-24px float-end"></i></h4>
-                <h2 class="mb-5">{{ number_format($totalPayments, 0, ',', ' ') }} F</h2>
-                <h6 class="card-text">Total recu</h6>
+        <div class="card text-white" style="background:linear-gradient(135deg,#00b894,#00cec9);min-height:unset;">
+            <div class="card-body py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1" style="color:rgba(255,255,255,0.85);">Paiements</h6>
+                        <h3 class="mb-0 font-weight-bold">{{ number_format($totalPayments, 0, ',', ' ') }} F</h3>
+                    </div>
+                    <i class="mdi mdi-cash mdi-36px" style="opacity:0.4;"></i>
+                </div>
             </div>
         </div>
     </div>
@@ -149,7 +170,7 @@
                                 <td>
                                     <a href="{{ route('admin.classes.show', $class->id) }}" class="btn btn-sm btn-info">
                                         <i class="mdi mdi-eye"></i>
-                                    </a>
+                                     </a>
                                 </td>
                             </tr>
                             @endforeach

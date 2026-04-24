@@ -45,19 +45,15 @@
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Enfants</label>
                         <div class="col-sm-9">
-                            @foreach($students as $student)
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="student_ids[]"
-                                    value="{{ $student->id }}"
-                                    {{ $parent->students->contains($student->id) ? 'checked' : '' }}>
-                                <label class="form-check-label">
-                                    {{ $student->first_name }} {{ $student->last_name }}
-                                    <small class="text-muted">({{ $student->registration_number }})</small>
-                                </label>
-                            </div>
-                            @endforeach
+                            <input type="text" name="student_name" list="students" class="form-control" placeholder="Rechercher un étudiant...">
+                            <datalist id="students">
+                                @foreach($students as $student)
+                                    <option value="{{ $student->first_name }} {{ $student->last_name }} ({{ $student->registration_number }})">
+                                @endforeach
+                            </datalist>
                         </div>
                     </div>
+
                     <div class="text-right mt-4">
                         <a href="{{ route('admin.parents.index') }}" class="btn btn-secondary me-2">Annuler</a>
                         <button type="submit" class="btn btn-primary">

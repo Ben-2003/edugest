@@ -10,6 +10,43 @@
     <link rel="stylesheet" href="{{ asset('dist/assets/vendors/font-awesome/css/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('dist/assets/css/style.css') }}">
     <link rel="shortcut icon" href="{{ asset('dist/assets/images/favicon.png') }}" />
+    <style>
+      /* Scroll independant sidebar et contenu */
+      body, html {
+          height: 100%;
+          overflow: hidden;
+      }
+      .container-scroller {
+          height: 100vh;
+          overflow: hidden;
+      }
+      .container-fluid.page-body-wrapper {
+          height: calc(100vh - 63px);
+          overflow: hidden;
+          display: flex;
+      }
+      .sidebar.sidebar-offcanvas {
+          height: 100%;
+          overflow-y: auto;
+          overflow-x: hidden;
+          position: relative !important;
+      }
+      .main-panel {
+          height: 100%;
+          overflow-y: auto;
+          overflow-x: hidden;
+          flex: 1;
+      }
+      /* Scrollbar style sidebar */
+      .sidebar::-webkit-scrollbar { width: 4px; }
+      .sidebar::-webkit-scrollbar-track { background: transparent; }
+      .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
+      /* Scrollbar style contenu */
+      .main-panel::-webkit-scrollbar { width: 6px; }
+      .main-panel::-webkit-scrollbar-track { background: #f1f1f1; }
+      .main-panel::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+    </style>
+
     @yield('styles')
   </head>
   <body>
